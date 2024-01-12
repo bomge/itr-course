@@ -1,0 +1,24 @@
+.cardSection {
+	position: relative
+}
+.cardSection-icon {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	/* // color: '#ff6b6b', */
+}
+.title{
+	font-size: 18px;
+	font-weight: 700;
+}
+.author{
+	font-size: 14px;
+	color: gray;
+	text-align: end;
+}
+.tags{
+	margin-bottom: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}

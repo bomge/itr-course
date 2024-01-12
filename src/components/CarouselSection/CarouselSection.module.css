@@ -1,0 +1,19 @@
+.carousel{
+	/* margin-left: 2em; */
+	margin-bottom: 3em;
+	/* padding-top: 10px;
+	padding-bottom: 10px; */
+}
+
+.title {
+	color: light-dark(#3B3B3B, #E9ECEF);
+}
+
+.container{
+	margin-left: 2em;
+	/* padding-top: 10px;
+	padding-bottom: 10px; */
+	/* @media (max-width: $mantine-breakpoint-xs) {
+		margin-left: 16% ;
+	  } */
+}
