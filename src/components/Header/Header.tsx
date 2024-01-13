@@ -11,8 +11,9 @@ import {
 	Modal,
 	Avatar,
 	Menu,
+	Image,
 } from '@mantine/core';
-import { useDisclosure, useMediaQuery, useToggle } from '@mantine/hooks';
+import { useDisclosure, useToggle } from '@mantine/hooks';
 import { ActionIcon, useMantineColorScheme } from '@mantine/core';
 import {
 	IconSun,
@@ -32,11 +33,12 @@ import AuthModal_tabs from '../AuthForm/authform_tabs';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
 
-type FormType = 'login' | 'register';
+export type FormType = 'login' | 'register';
+export type UserState = {name: string, email: string}
 
 export default function Header() {
 	const [searchText, setSearchText] = useState('');
-	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] =
+	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer, open: openDrawer }] =
 		useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [type, toggle] = useToggle<FormType>(['login', 'register']);
@@ -45,11 +47,10 @@ export default function Header() {
 		keepTransitions: true,
 	});
 	const dark = colorScheme === 'dark';
-	const mobile = useMediaQuery('(max-width:48em)');
 
-	const authUser = useAuthUser();
+	const authUser = useAuthUser() as UserState | null;
 	const signOut = useSignOut();
-	const [user, setUser] = useState(authUser);
+	const [user, setUser] = useState<UserState | null>(authUser);
 
 	function HandleLogBtn_modal() {
 		closeDrawer();
@@ -95,11 +96,11 @@ export default function Header() {
 					},
 					inner: {
 						zIndex: 999,
-						width: mobile ? 'auto' : '100%',
+						// width: mobile ? 'auto' : '100%',
 						// width:'auto'
 					},
 				}}
-				trapFocus
+				// trapFocus
 			>
 				{/* <AuthModal type={type} toggle={toggle}/> */}
 
@@ -109,6 +110,7 @@ export default function Header() {
 					toggle={toggle}
 					setUser={setUser}
 					closeModal={close}
+					openDrawer={openDrawer}
 				/>
 			</Modal>
 
@@ -116,8 +118,8 @@ export default function Header() {
 				<header className={classes.header}>
 					<Group justify="space-between" h="100%">
 						{/* <MantineLogo size={30} /> */}
-						<Link to="/">
-							<img src={siteIcon} alt="Logo" />
+						<Link to="/" >
+							<Image src={siteIcon} alt="Logo" mt='0.2em'/>
 						</Link>
 
 						<Group h="100%" gap={0} visibleFrom="sm">
@@ -174,6 +176,11 @@ export default function Header() {
 											<Avatar color="gray" className={classes.avatar}/>
 										</Menu.Target>
 										<Menu.Dropdown>
+											<Menu.Label>
+												{user?.name || 'No Name'}
+												<br />
+												{user.email}
+											</Menu.Label>
 											<Menu.Item
 												leftSection={
 													<IconPhotoStar
@@ -242,6 +249,11 @@ export default function Header() {
 										<Avatar color="gray" className={classes.avatar}/>
 									</Menu.Target>
 									<Menu.Dropdown>
+										<Menu.Label>
+											{user?.name || 'No Name'}
+											<br />
+											{user.email}
+										</Menu.Label>
 										<Menu.Item
 											leftSection={
 												<IconPhotoStar

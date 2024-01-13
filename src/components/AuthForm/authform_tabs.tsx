@@ -12,15 +12,16 @@ import {
 } from '@mantine/core';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { SetStateAction } from 'react';
-type FormType = 'login' | 'register';
+import { FormType } from '../Header/Header';
 interface AuthModalProps {
   toggle: (value?: SetStateAction<FormType> | undefined) => void
   activeTab: string;
   setUser: unknown,
   closeModal: () => void
+  openDrawer: () => void
 }
 
-export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal }: AuthModalProps) {
+export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal, openDrawer }: AuthModalProps) {
 	
 	const form = useForm({
 		initialValues: {
@@ -49,6 +50,7 @@ export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal 
 		{/* @ts-expect-error  prost*/}
 		  setUser({name: form.values.name, email: form.values.email});
 		  closeModal();
+		  openDrawer();
 	  };
 
 	return (
