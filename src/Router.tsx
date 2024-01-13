@@ -16,6 +16,14 @@ const router = createBrowserRouter([
 					</Suspense>
 				),
 			},
+			{
+				path: '/collection/:collectiID',
+				element: (
+					<Suspense fallback="Загрузка...">
+						Cтраница коллекции
+					</Suspense>
+				),
+			},
 		],
 	},
 ]);

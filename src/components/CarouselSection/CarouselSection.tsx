@@ -4,6 +4,7 @@ import { ICollectionCard, IItemCard } from '@/pages/Home.page';
 import classes from './CarouselSection.module.css';
 import { Title } from '@mantine/core';
 import ItemCard from '../Cards/ItemCard/ItemCard';
+import { useMediaQuery } from '@mantine/hooks';
 
 type CarouselSectionProps = {
 	data: (ICollectionCard | IItemCard)[];
@@ -27,6 +28,9 @@ export default function CarouselSection({ data, title, loading }: CarouselSectio
 		</Carousel.Slide>
 	));
 
+	const mobile = useMediaQuery('(max-width:48em)');
+	
+
 	return (
 		<>
 			<Title
@@ -47,10 +51,11 @@ export default function CarouselSection({ data, title, loading }: CarouselSectio
 				slideSize="30%"
 				slideGap="150"
 				controlSize={40}
+				draggable={mobile? true :false}
 				styles={{
 					container: {
 						// marginLeft: '15%',
-						marginLeft: '2em',
+						// marginLeft: '2em',
 					},
 					viewport:{
 						paddingTop:'10px',

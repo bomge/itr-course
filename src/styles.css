@@ -1,6 +1,7 @@
 a:any-link {
 	/* color: forestgreen; */
-	text-decoration-color: red;
+	/* text-decoration-color: red; */
+	text-decoration: none;
   }
 
 /* .mantine-Carousel-container{
@@ -10,6 +11,10 @@ a:any-link {
 		margin-left: 16% ;
 	  }
 } */
+
+.mantine-Carousel-container{
+	margin-left: 4.5em;
+}
 
 .hoverTransform {
 	transition: transform 0.3s, box-shadow 0.3s;  
@@ -31,4 +36,23 @@ animation: pulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 50% {
 	transform: scale(1.05);
 }
+}
+
+#root {
+		-ms-overflow-style: none; /* for Internet Explorer, Edge */
+		scrollbar-width: none; /* for Firefox */
+		overflow-y: scroll;
+	  
+}
+
+#root::-webkit-scrollbar {
+	display: none; /* for Chrome, Safari, and Opera */
+  }
+
+.mantine-Tabs-tab[aria-selected="true"]{
+	border-color: light-dark(#3b82f6, #8f8f8f);
+}
+
+.mantine-Modal-root{
+	padding: 0 !important;
 }

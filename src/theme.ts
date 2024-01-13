@@ -3,7 +3,7 @@ import { createTheme } from '@mantine/core';
 export const theme = createTheme({
 	/** Put your mantine theme override here */
 	breakpoints: {
-		xxs: '24em',
+		xxs: '22em',
 		xs: '36em',
 		sm: '49em',
 		sm_og:'48em',
@@ -11,4 +11,5 @@ export const theme = createTheme({
 		lg: '74em',
 		xl: '90em',
 	},
+	
 });

@@ -21,7 +21,7 @@ export default function CollectionCardSkeleton() {
 
 	const tagDiv = [0,0,0].map((_, i) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-		<Skeleton width="20%" height={13}/>
+		<Skeleton width="20%" radius='55px' height={13} key={i}/>
 	));
 
 

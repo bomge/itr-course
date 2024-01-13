@@ -1,21 +1,29 @@
 .cardSection {
 	position: relative
 }
+
 .cardSection-icon {
 	position: absolute;
 	bottom: 10px;
 	right: 10px;
 	/* // color: '#ff6b6b', */
 }
+
 .title{
 	font-size: 18px;
 	font-weight: 700;
 }
+
 .author{
 	font-size: 14px;
 	color: gray;
 	text-align: end;
 }
+
+.author a{
+	color: light-dark(#443a3a, rgb(181 177 177 / 86%));
+}
+
 .tags{
 	margin-bottom: 10px;
 	display: flex;

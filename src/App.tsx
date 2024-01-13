@@ -2,12 +2,18 @@ import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
 import { Router } from './Router';
 import { theme } from './theme';
+import AuthProvider from 'react-auth-kit';
 import '@mantine/carousel/styles.css';
 import './styles.css';
+import authStore from './stores/authStore';
+
+
 export default function App() {
 	return (
 		<MantineProvider theme={theme} defaultColorScheme="dark">
-			<Router />
+			 <AuthProvider store={authStore}>
+				<Router />
+			 </AuthProvider>
 		</MantineProvider>
 	);
 }

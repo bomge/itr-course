@@ -26,28 +26,20 @@
 	}
   }
   
-  .subLink {
-	width: 100%;
-	padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
-	border-radius: var(--mantine-radius-md);
-  
-	@mixin hover {
-	  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
-	}
-  }
-  
-  .dropdownFooter {
-	background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
-	margin: calc(var(--mantine-spacing-md) * -1);
-	margin-top: var(--mantine-spacing-sm);
-	padding: var(--mantine-spacing-md) calc(var(--mantine-spacing-md) * 2);
-	padding-bottom: var(--mantine-spacing-xl);
-	border-top: rem(1px) solid light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5));
-  }
+
+
 .mainHeader{
+	min-width: 98vw;
 	position: sticky;
     top: 0;
     background-color: var(--mantine-color-body);
     z-index: 999;
 	padding: 0;
+	/* padding-right: 5px; */
 }
+
+.avatar :hover{
+	/* background-color: rgb(237, 236, 236); */
+	background-color: light-dark(rgb(237, 236, 236), #3c3e40);
+	transition: fill 33.222s ease;
+  }

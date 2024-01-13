@@ -14,6 +14,7 @@ import classes from './ItemCard.module.css';
 import placeHolder from '../../../assets/product-placeholder.png';
 import ItemCardSkeleton from './ItemCardSkeleton';
 import { IItemCard } from '@/pages/Home.page';
+import { Link } from 'react-router-dom';
 
 interface ItemCardProps {
 	item: IItemCard;
@@ -59,7 +60,8 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 							Item
 						</Badge>
 
-						<Image src={placeHolder} height={160} alt="Rare books" />
+						
+						<Link to={`/item/${id}`}><Image src={placeHolder} height={160} alt="Rare books" /></Link> 
 
 						<ActionIcon
 							className={classes['cardSection-icon']}
@@ -75,16 +77,19 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 					</div>
 				</CardSection>
 				<Flex direction="column" mb="5px" mt="10px">
-					<Text truncate="end" className={classes.title}>
-						{title} <br />
-					</Text>
+					<Anchor style={{ color: 'inherit' }} component={Link} to={`/item/${id}`}>
+						<Text truncate="end" className={classes.title}>
+							{title} <br />
+						</Text>
+					</Anchor>
 					<Text truncate="end" className={classes.author} mt="-8px">
 						by&nbsp;
 						{/* <a href={authorId} >{author}</a> */}
 						<Anchor
 							size="14px"
 							className={classes.author}
-							href={`/users/${authorId}`}
+							component={Link}
+							to={`/user/${authorId}`}
 							target="_blank"
 							underline="never"
 						>
@@ -92,7 +97,7 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 						</Anchor>
 					</Text>
 				</Flex>
-				<Anchor href={`/collections/${collectionId}`} underline="never">
+				<Anchor component={Link} to={`/collection/${collectionId}`} underline="never">
 					<Text
 						size="sm"
 						// style={{

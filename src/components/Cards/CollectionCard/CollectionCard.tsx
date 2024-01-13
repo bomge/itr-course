@@ -73,7 +73,7 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 						Collection
 					</Badge>
 
-					<Image src={placeHolder} height={160} alt="Rare books" />
+					<Link to={`/collection/${id}`}><Image src={placeHolder} height={160} alt="Rare books" /></Link> 
 
 					<ActionIcon
 						className={classes['cardSection-icon']}
@@ -89,15 +89,17 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 				</div>
 			</CardSection>
 			<Flex direction="column" mb="5px" mt="10px">
-				<Text truncate="end" className={classes.title}>
-					{title} <br />
-				</Text>
+				<Anchor style={{ color: 'inherit' }} component={Link} to={`/collection/${id}`}>
+					<Text truncate="end" className={classes.title}>
+						{title} <br />
+					</Text>
+				</Anchor>
 				<Text truncate="end" className={classes.author} mt="-8px">
 					by&nbsp;
 					{/* <a href={authorId} >{author}</a> */}
 					<Anchor
 						size="14px"
-						className={classes.author}
+						className={classes['author-link']}
 						href={`/users/${authorId}`}
 						target="_blank"
 						underline="never"
