@@ -18,7 +18,6 @@ import {
 	IconSun,
 	IconMoonStars,
 	IconSearch,
-	IconHeart,
 	IconLogout,
 	IconPhotoStar,
 } from '@tabler/icons-react';
@@ -104,7 +103,6 @@ export default function Header() {
 			>
 				{/* <AuthModal type={type} toggle={toggle}/> */}
 
-				{/* @ts-expect-error  prost*/}
 
 				<AuthModal_tabs
 					activeTab={type}

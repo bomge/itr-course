@@ -10,11 +10,11 @@ import {
 	Stack,
 	Group,
 } from '@mantine/core';
-import { SetStateAction } from 'react';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
-
+import { SetStateAction } from 'react';
+type FormType = 'login' | 'register';
 interface AuthModalProps {
-  toggle: (value?: SetStateAction<string> | undefined) => void;
+  toggle: (value?: SetStateAction<FormType> | undefined) => void
   activeTab: string;
   setUser: unknown,
   closeModal: () => void
@@ -53,7 +53,7 @@ export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal 
 
 	return (
 		<Paper radius="md" p="md">
-			{/* @ts-expect-error  prost*/}
+			{/* @ts-expect-error kostlen*/}
 			<Tabs defaultValue='login' value={activeTab} onChange={toggle}> 
 				<Tabs.List>
 					<Tabs.Tab value="login">
