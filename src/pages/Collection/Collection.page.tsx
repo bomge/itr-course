@@ -1,6 +1,5 @@
 import {
 	Text,
-	Card,
 	Image,
 	Button,
 	Box,
@@ -33,7 +32,8 @@ import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import Highlight from '@tiptap/extension-highlight';
-type ItemCardCollectionPage = {
+import ItemCard_simple from '@/components/Cards/ItemCard_simple/ItemCard_simple';
+export type ItemCardCollectionPage = {
 	img: string;
 	title: string;
 	id: string;
@@ -128,44 +128,15 @@ function CollectionPage() {
 	// truncate="end"
 
 	const itemsDiv = fakeItems_collectPage.map((item, i) => (
-		<Card
-			style={{
-				padding: 0,
-				width: 160,
-				textAlign: 'center',
-				margin: '0 auto',
-			}}
-			// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-			key={i}
-			withBorder
-			radius="md"
-			className="hoverTransform"
-		>
-			<Link to={`/item/${item.id}`}>
-				<Image src={item.img} fit="contain" />
-			</Link>
-			<Link style={{ color: 'inherit' }} to={`/item/${item.id}`}>
-				<Text
-					mah="5em"
-					p="0.5em"
-					// style={{
-					// 	overflow: 'hidden',
-					// 	'-webkit-box-orient': 'vertical',
-					// 	'-webkit-line-clamp': 2,
-					// 	display: '-webkit-box',
-					// }}
-					className={classes['card-title']}
-				>
-					{item.title}
-				</Text>
-			</Link>
-		</Card>
+		// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+		<ItemCard_simple item={item} key={i}/>
+		
 	));
 
 	const editor = useEditor({
 		extensions: [StarterKit, TextStyle, Color, Underline, Highlight],
 		content: description,
-		onUpdate: (e) => setDescription(editor?.getHTML()),
+		onUpdate: () => setDescription(editor?.getHTML() || ''),
 	});
 	return (
 		<>
@@ -254,9 +225,10 @@ function CollectionPage() {
 					>
 						by{' '}
 						<Anchor
+							component={Link}
 							size="14px"
 							className={classes['author-link']}
-							href={`/users/${authorId}`}
+							to={`/users/${authorId}`}
 							target="_blank"
 							underline="never"
 						>
@@ -327,6 +299,7 @@ function CollectionPage() {
 						// dangerouslySetInnerHTML={getDescriptionText()}
 					>
 						{/* {getDescriptionText()} */}
+						{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
 						<div dangerouslySetInnerHTML={{ __html: getDescriptionText() }} />
 						<br />
 						<Button

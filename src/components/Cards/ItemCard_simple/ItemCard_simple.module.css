@@ -1,0 +1,11 @@
+.card-title{
+	width: 100%;
+	/* this code clamps based on specified lines */
+	overflow: hidden;
+   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  text-align: left;
+  font-size: 18px;
+	font-weight: 300;
+}

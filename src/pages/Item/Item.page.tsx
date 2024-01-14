@@ -12,12 +12,17 @@ import {
 	Box,
 	Avatar,
 	Table,
+	Anchor,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { IconBrandTelegram, IconHeart } from '@tabler/icons-react';
 import placeholder_item from '../../assets/product-placeholder.png';
 import classes from './Item.page.module.css';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
+import { Link } from 'react-router-dom';
+
+const author = 'Oleg Petrov';
+const authorId = '1';
 
 export default function ItemPage() {
 	const [liked, setLiked]=useState(true);
@@ -150,13 +155,19 @@ export default function ItemPage() {
 								old
 						</Badge>
 					</Title>
-					<Text
-						style={{
-							marginBottom: '10px',
-							color: '#7f8c8d',
-						}}
-					>
-							by Oleg Petrov
+					<Text truncate="end" className={classes.author} mt='-7px' mb='5px'>
+						by&nbsp;
+						{/* <a href={authorId} >{author}</a> */}
+						<Anchor
+							size="14px"
+							className={classes.author}
+							component={Link}
+							to={`/user/${authorId}`}
+							target="_blank"
+							underline="never"
+						>
+							{author}
+						</Anchor>
 					</Text>
 					<Table >
 						<tbody>
@@ -245,9 +256,7 @@ export default function ItemPage() {
 									Petya
 							</Text>
 							<Text
-								style={{
-									color: '#7f8c8d',
-								}}
+								className={classes['comment-text']}
 							>
 									Вау, супер крутая книга. Сам с женой её читаю
 							</Text>
@@ -276,9 +285,7 @@ export default function ItemPage() {
 									Ира
 							</Text>
 							<Text
-								style={{
-									color: '#7f8c8d',
-								}}
+								className={classes['comment-text']}
 							>
 									Очень качественная книга, никогда подобного не читал. Вот что
 									нужно читать своим детям
