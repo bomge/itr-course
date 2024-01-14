@@ -1,6 +1,6 @@
 import { Carousel } from '@mantine/carousel';
 import CollectionCard from '../Cards/CollectionCard/CollectionCard';
-import { ICollectionCard, IItemCard } from '@/pages/Home.page';
+import { ICollectionCard, IItemCard } from '@/pages/Home/Home.page';
 import classes from './CarouselSection.module.css';
 import { Title } from '@mantine/core';
 import ItemCard from '../Cards/ItemCard/ItemCard';

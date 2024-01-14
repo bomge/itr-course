@@ -15,10 +15,10 @@ import {
 import { IconHeart, IconMinus, IconPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 
-import placeholder_item from '../assets/product-placeholder.png';
-import placeholder_collection from '../assets/placeholder.png';
+import placeholder_item from '../../assets/product-placeholder.png';
+import placeholder_collection from '../../assets/placeholder.png';
 import classes from './Collection.page.module.css';
-import { ITag } from './Home.page';
+import { ITag } from '../Home/Home.page';
 import { Link } from 'react-router-dom';
 
 type ItemCardCollectionPage = {
@@ -119,8 +119,8 @@ function CollectionPage() {
 			radius='md'
 			className='hoverTransform'
 		>
-			<Link to={`/items/${item.id}`}><Image src={item.img} fit="contain" /></Link> 
-			<Link style={{ color: 'inherit' }} to={`/items/${item.id}`}>
+			<Link to={`/item/${item.id}`}><Image src={item.img} fit="contain" /></Link> 
+			<Link style={{ color: 'inherit' }} to={`/item/${item.id}`}>
 				<Text
 					mah="5em"
 					p="0.5em"

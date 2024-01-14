@@ -1,0 +1,20 @@
+.item-description{
+	@media (max-width: $mantine-breakpoint-sm) {
+		margin-left: 19%;
+	  }
+}
+
+.descr-btn {
+	color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
+	background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}
+
+.descr-btn:hover {
+	/* background-color: transparent; */
+	/* color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6)); */
+	background-color: light-dark(var(--mantine-color-gray-1), #343434f3);
+}
+
+.rows{
+	transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
+}

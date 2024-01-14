@@ -12,11 +12,12 @@ import {
 } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
 import placeHolder from '../../../assets/placeholder.png';
-import { ICollectionCard } from '@/pages/Home.page';
+import { ICollectionCard } from '@/pages/Home/Home.page';
 import { truncateText } from '@/utils/util';
 import classes from './CollectionCard.module.css';
 import { Link } from 'react-router-dom';
 import CollectionCardSkeleton from './CollectionCardSkeleton';
+import { useState } from 'react';
 
 interface CollectionCardProps {
 	item: ICollectionCard;
@@ -26,7 +27,7 @@ const MAX_LENGTH_DESCRIPTION = 60;
 
 export default function CollectionCard({ item, loading }: CollectionCardProps) {
 	const { author, authorId, description, liked, tags, title, id } = item;
-
+	const [isLiked, setLiked]=useState(liked);
 	const { colorScheme } = useMantineColorScheme({
 		keepTransitions: true,
 	});
@@ -79,11 +80,12 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 						className={classes['cardSection-icon']}
 						variant="transparent"
 						// color="gray"
+						onClick={()=>setLiked(prev=>!prev)}
 					>
 						<IconHeart
 							size={24}
 							color="red"
-							fill={liked ? 'red' : 'transparent'}
+							fill={isLiked ? 'red' : 'transparent'}
 						/>
 					</ActionIcon>
 				</div>

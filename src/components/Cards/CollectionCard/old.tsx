@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
 import placeHolder from '../../../assets/placeholder.png';
-import { ICollectionCard } from '@/pages/Home.page';
+import { ICollectionCard } from '@/pages/Home/Home.page';
 import { truncateText } from '@/utils/util';
 interface CollectionCardProps {
 	collectionItem: ICollectionCard;

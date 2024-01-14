@@ -13,8 +13,9 @@ import { IconHeart } from '@tabler/icons-react';
 import classes from './ItemCard.module.css';
 import placeHolder from '../../../assets/product-placeholder.png';
 import ItemCardSkeleton from './ItemCardSkeleton';
-import { IItemCard } from '@/pages/Home.page';
+import { IItemCard } from '@/pages/Home/Home.page';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 
 interface ItemCardProps {
 	item: IItemCard;
@@ -24,7 +25,7 @@ interface ItemCardProps {
 export default function ItemCard({ item, loading }: ItemCardProps) {
 	const { author, authorId, collectionId, collectionName, id, liked, title } =
 		item;
-
+	const [isLiked, setLiked]=useState(liked);
 	const { colorScheme } = useMantineColorScheme({
 		keepTransitions: true,
 	});
@@ -67,11 +68,12 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 							className={classes['cardSection-icon']}
 							variant="transparent"
 							// color="gray"
+							onClick={()=>setLiked(prev=>!prev)}
 						>
 							<IconHeart
 								size={24}
 								color="red"
-								fill={liked ? 'red' : 'transparent'}
+								fill={isLiked ? 'red' : 'transparent'}
 							/>
 						</ActionIcon>
 					</div>
