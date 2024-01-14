@@ -11,8 +11,14 @@ import {
 	Flex,
 	ActionIcon,
 	Anchor,
+	Input,
 } from '@mantine/core';
-import { IconHeart, IconMinus, IconPlus } from '@tabler/icons-react';
+import {
+	IconColorPicker,
+	IconHeart,
+	IconMinus,
+	IconPlus,
+} from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
 import placeholder_item from '../../assets/product-placeholder.png';
@@ -20,7 +26,13 @@ import placeholder_collection from '../../assets/placeholder.png';
 import classes from './Collection.page.module.css';
 import { ITag } from '../Home/Home.page';
 import { Link } from 'react-router-dom';
-
+import { RichTextEditor } from '@mantine/tiptap';
+import { useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { Color } from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
+import Underline from '@tiptap/extension-underline';
+import Highlight from '@tiptap/extension-highlight';
 type ItemCardCollectionPage = {
 	img: string;
 	title: string;
@@ -71,27 +83,34 @@ const fakeItems_collectPage: ItemCardCollectionPage[] = [
 	},
 ];
 
+const initDescription =
+	'эту коллекцию я собирал тысячу лет. А вообще ее собирать начинал еще отец. А по правде, и его отец тоже бла-бла-бла-бла.. здесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цвет';
+const initTitle = 'Rarest books est 1980';
+
+const maxDescriptionLength = 145;
+
 function CollectionPage() {
 	const [expand, setExpand] = useState(false);
-	const [liked, setLiked]=useState(true);
+	const [liked, setLiked] = useState(true);
 
-	const author='Oleg Popov';
-	const authorId='1';
-	
+	const author = 'Oleg Popov';
+	const authorId = '1';
+
+	const [description, setDescription] = useState(initDescription);
+	const [title, setTitle] = useState(initTitle);
+	const [isEdit, setIsEdit] = useState(false);
+
 	const { colorScheme } = useMantineColorScheme({
 		keepTransitions: true,
 	});
 	const dark = colorScheme === 'dark';
-	const maxDescriptionLength = 45;
 	const handleClick = () => {
 		setExpand(!expand);
 	};
 	useEffect(() => {
 		window.scrollTo(0, 0);
-	  }, []);
+	}, []);
 	const getDescriptionText = () => {
-		const description =
-			'эту коллекцию я собирал тысячу лет. А вообще ее собирать начинал еще отец. А по правде, и его отец тоже бла-бла-бла-бла.. здесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цвет';
 		return expand ? description : description.slice(0, maxDescriptionLength);
 	};
 
@@ -119,10 +138,12 @@ function CollectionPage() {
 			// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 			key={i}
 			withBorder
-			radius='md'
-			className='hoverTransform'
+			radius="md"
+			className="hoverTransform"
 		>
-			<Link to={`/item/${item.id}`}><Image src={item.img} fit="contain" /></Link> 
+			<Link to={`/item/${item.id}`}>
+				<Image src={item.img} fit="contain" />
+			</Link>
 			<Link style={{ color: 'inherit' }} to={`/item/${item.id}`}>
 				<Text
 					mah="5em"
@@ -137,14 +158,19 @@ function CollectionPage() {
 				>
 					{item.title}
 				</Text>
-
 			</Link>
 		</Card>
 	));
+
+	const editor = useEditor({
+		extensions: [StarterKit, TextStyle, Color, Underline, Highlight],
+		content: description,
+		onUpdate: (e) => setDescription(editor?.getHTML()),
+	});
 	return (
 		<>
 			<Box>
-				<Stack maw="80vw" m="auto" gap="0" mt='4em'>
+				<Stack maw="80vw" m="auto" gap="0" mt="4em">
 					<Text
 						style={{
 							fontSize: 12,
@@ -154,34 +180,70 @@ function CollectionPage() {
 						{'collections -> rarest books est 1980'}
 					</Text>
 
-					<Image radius='sm' src={placeholder_collection} w="360" m="auto" />
+					<div style={{ position: 'relative' }}>
+						<Button
+							pos="absolute"
+							right="0"
+							onClick={() => setIsEdit((v) => !v)}
+						>
+							{isEdit ? 'Save' : 'Edit'}{' '}
+						</Button>
+
+						<Image radius="sm" src={placeholder_collection} w="360" m="auto" />
+					</div>
+
+					{/* {isEdit? 
+					:
 					
-					<Text
-						style={{
-							fontSize: 30,
-							fontWeight: 700,
-							textAlign: 'center',
-						}}
-					>
-						Rarest books est 1980
-						 {<ActionIcon
+					
+					} */}
+					<Group m="auto">
+						{isEdit ? (
+							<Input
+								value={title}
+								onChange={(event) => setTitle(event.currentTarget.value)}
+								style={{
+									fontSize: 30,
+									fontWeight: 700,
+									textAlign: 'center',
+								}}
+								// w='2em'
+								mt="0.4em"
+								mb="0.0em"
+								pb="0"
+								// h='0.3em'
+							/>
+						) : (
+							<Text
+								style={{
+									fontSize: 30,
+									fontWeight: 700,
+									textAlign: 'center',
+								}}
+							>
+								{title}
+							</Text>
+						)}
+						<ActionIcon
 							className={classes['main-heart']}
 							variant="transparent"
-							m='auto'
-							style={{
-								position: 'absolute',
-								// bottom:'20px'
-							}}
-							onClick={()=>setLiked(prev=>!prev)}
-						// color="gray"
+							m="auto"
+							style={
+								{
+									// position: 'absolute',
+									// bottom:'20px'
+								}
+							}
+							onClick={() => setLiked((prev) => !prev)}
+							// color="gray"
 						>
 							<IconHeart
 								size={24}
 								color="red"
 								fill={liked ? 'red' : 'transparent'}
 							/>
-						</ActionIcon>}
-					</Text>
+						</ActionIcon>
+					</Group>
 					<Text
 						style={{
 							fontSize: 14,
@@ -190,7 +252,8 @@ function CollectionPage() {
 						}}
 						className={classes.author}
 					>
-						by <Anchor
+						by{' '}
+						<Anchor
 							size="14px"
 							className={classes['author-link']}
 							href={`/users/${authorId}`}
@@ -203,6 +266,55 @@ function CollectionPage() {
 
 					<Group className={classes.tags}>{tagDiv}</Group>
 
+					{isEdit && (
+						<RichTextEditor editor={editor} mt="1em" mb="-0.5m">
+							<RichTextEditor.Toolbar sticky stickyOffset={60}>
+								<RichTextEditor.ColorPicker
+									colors={[
+										'#25262b',
+										'#868e96',
+										'#fa5252',
+										'#e64980',
+										'#be4bdb',
+										'#7950f2',
+										'#4c6ef5',
+										'#228be6',
+										'#15aabf',
+										'#12b886',
+										'#40c057',
+										'#82c91e',
+										'#fab005',
+										'#fd7e14',
+									]}
+								/>
+
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.Control interactive={false}>
+										<IconColorPicker size="1rem" stroke={1.5} />
+									</RichTextEditor.Control>
+									<RichTextEditor.Color color="#F03E3E" />
+									<RichTextEditor.Color color="#7048E8" />
+									<RichTextEditor.Color color="#1098AD" />
+									<RichTextEditor.Color color="#37B24D" />
+									<RichTextEditor.Color color="#F59F00" />
+								</RichTextEditor.ControlsGroup>
+
+								<RichTextEditor.UnsetColor />
+
+								<RichTextEditor.ControlsGroup>
+									<RichTextEditor.Bold />
+									<RichTextEditor.Italic />
+									<RichTextEditor.Underline />
+									<RichTextEditor.Strikethrough />
+									<RichTextEditor.Highlight />
+									<RichTextEditor.Code />
+									<RichTextEditor.ClearFormatting />
+								</RichTextEditor.ControlsGroup>
+							</RichTextEditor.Toolbar>
+
+							<RichTextEditor.Content />
+						</RichTextEditor>
+					)}
 					<Text
 						style={{
 							fontSize: 14,
@@ -210,8 +322,13 @@ function CollectionPage() {
 						}}
 						mt="1em"
 						mb="20px"
+						span
+						// dangerouslySetInnerHTML={{ __html: htmlString }}
+						// dangerouslySetInnerHTML={getDescriptionText()}
 					>
-						{getDescriptionText()} <br />
+						{/* {getDescriptionText()} */}
+						<div dangerouslySetInnerHTML={{ __html: getDescriptionText() }} />
+						<br />
 						<Button
 							onClick={handleClick}
 							className={classes['descr-btn']}
@@ -242,23 +359,23 @@ function CollectionPage() {
 						style={{
 							marginBottom: 20,
 						}}
-						wrap='wrap'
-						gap='5em'
+						wrap="wrap"
+						gap="5em"
 					>
 						{itemsDiv}
 					</Flex>
 					<Button
 						style={{
 							// width: '100%',
-							width:'fit-content',
+							width: 'fit-content',
 							padding: '5px 10px',
-							marginBottom:'20px',
-							marginLeft:'auto',
-							marginRight:'auto',
+							marginBottom: '20px',
+							marginLeft: 'auto',
+							marginRight: 'auto',
 						}}
 						variant={dark ? 'outline' : 'light'}
-						 color="gray"
-						 radius='md'
+						color="gray"
+						radius="md"
 					>
 						Show More
 					</Button>

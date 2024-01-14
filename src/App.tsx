@@ -4,6 +4,7 @@ import { Router } from './Router';
 import { theme } from './theme';
 import AuthProvider from 'react-auth-kit';
 import '@mantine/carousel/styles.css';
+import '@mantine/tiptap/styles.css';
 import './styles.css';
 import authStore from './stores/authStore';
 
