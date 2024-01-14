@@ -17,11 +17,15 @@ import { useEffect, useState } from 'react';
 import { IconBrandTelegram, IconHeart } from '@tabler/icons-react';
 import placeholder_item from '../../assets/product-placeholder.png';
 import classes from './Item.page.module.css';
+import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 
 export default function ItemPage() {
 	const [liked, setLiked]=useState(true);
 	const [showMore, setShowMore] = useState(false);
 	
+	const authUser = useAuthUser();
+
+
 	// const [newCharacteristics, setNewCharacteristics] = useState([]);
 	const characteristics = [
 		{
@@ -282,7 +286,7 @@ export default function ItemPage() {
 						</div>
 					</Box>
 					<div className="comment-submit-section">
-						<TextInput
+						{authUser ? <TextInput
 							placeholder="Your comment"
 							rightSection={
 								<ActionIcon>
@@ -293,6 +297,23 @@ export default function ItemPage() {
 								// paddingRight: '30px',
 							}}
 						/>
+							:	<TextInput
+								placeholder="You must be logged in to comment"
+								
+								disabled
+								rightSection={
+									<ActionIcon disabled>
+										<IconBrandTelegram size={16} />
+									</ActionIcon>
+								}
+								styles={{
+									input:{
+										textAlign: 'center'
+
+									}
+								}}
+							/>
+						}
 					</div>
 				</Stack>
 			</Paper>
