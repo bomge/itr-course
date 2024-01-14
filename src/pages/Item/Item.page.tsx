@@ -13,7 +13,7 @@ import {
 	Avatar,
 	Table,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IconBrandTelegram, IconHeart } from '@tabler/icons-react';
 import placeholder_item from '../../assets/product-placeholder.png';
 import classes from './Item.page.module.css';
@@ -21,6 +21,7 @@ import classes from './Item.page.module.css';
 export default function ItemPage() {
 	const [liked, setLiked]=useState(true);
 	const [showMore, setShowMore] = useState(false);
+	
 	// const [newCharacteristics, setNewCharacteristics] = useState([]);
 	const characteristics = [
 		{
@@ -59,6 +60,9 @@ export default function ItemPage() {
 	// 	};
 	// 	setNewCharacteristics([...newCharacteristics, newChar]);
 	// };
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	  }, []);
 	return (
 		<div
 			style={{

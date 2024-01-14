@@ -13,7 +13,7 @@ import {
 	Anchor,
 } from '@mantine/core';
 import { IconHeart, IconMinus, IconPlus } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import placeholder_item from '../../assets/product-placeholder.png';
 import placeholder_collection from '../../assets/placeholder.png';
@@ -86,6 +86,9 @@ function CollectionPage() {
 	const handleClick = () => {
 		setExpand(!expand);
 	};
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	  }, []);
 	const getDescriptionText = () => {
 		const description =
 			'эту коллекцию я собирал тысячу лет. А вообще ее собирать начинал еще отец. А по правде, и его отец тоже бла-бла-бла-бла.. здесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цвет';
