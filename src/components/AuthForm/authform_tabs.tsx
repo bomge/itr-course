@@ -13,6 +13,7 @@ import {
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { SetStateAction } from 'react';
 import { FormType } from '../Header/Header';
+import { useMediaQuery } from '@mantine/hooks';
 interface AuthModalProps {
   toggle: (value?: SetStateAction<FormType> | undefined) => void
   activeTab: string;
@@ -22,7 +23,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal, openDrawer }: AuthModalProps) {
-	
+	const mobile = useMediaQuery('(max-width:48em)');
 	const form = useForm({
 		initialValues: {
 			email: '',
@@ -50,7 +51,8 @@ export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal,
 		{/* @ts-expect-error  prost*/}
 		  setUser({name: form.values.name, email: form.values.email});
 		  closeModal();
-		  openDrawer();
+		  if(mobile)
+		  	openDrawer();
 	  };
 
 	return (
