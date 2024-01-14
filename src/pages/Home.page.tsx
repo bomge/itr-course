@@ -2,7 +2,7 @@ import HeroBullets from '@/components/HeroBullets/HeroBullets';
 // import CollectionCard from '@/components/CarouselSection/CollectionCard/old';
 import CarouselSection from '@/components/CarouselSection/CarouselSection';
 import { useEffect, useState } from 'react';
-interface ITag {
+export interface ITag {
 	color: string;
 	text: string;
 }

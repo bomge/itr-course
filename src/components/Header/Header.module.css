@@ -29,8 +29,8 @@
 
 
 .mainHeader{
-	min-width: 98vw;
-	position: sticky;
+	min-width: 100vw;
+	position: fixed;
     top: 0;
     background-color: var(--mantine-color-body);
     z-index: 999;

@@ -56,3 +56,7 @@ animation: pulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 .mantine-Modal-root{
 	padding: 0 !important;
 }
+
+::-webkit-scrollbar {
+	width: 0px;
+  }

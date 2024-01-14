@@ -1,0 +1,33 @@
+.descr-btn {
+	color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
+}
+
+.descr-btn:hover {
+	background-color: transparent;
+	/* color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6)); */
+	/* background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6)); */
+}
+
+.tags{
+	/* margin-bottom: 10px; */
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: auto;
+}
+
+.card-title{
+	width: 100%;
+	/* this code clamps based on specified lines */
+	overflow: hidden;
+   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  text-align: left;
+  font-size: 18px;
+	font-weight: 300;
+}
+
+.author a{
+	color: light-dark(#443a3a, rgb(181 177 177 / 86%));
+}

@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from './Layout/Layout';
 import { Suspense } from 'react';
 import { HomePage } from './pages/Home.page';
+import CollectionPage from './pages/Collection.page';
 
 const router = createBrowserRouter([
 	{
@@ -20,7 +21,7 @@ const router = createBrowserRouter([
 				path: '/collection/:collectiID',
 				element: (
 					<Suspense fallback="Загрузка...">
-						Cтраница коллекции
+						<CollectionPage/>
 					</Suspense>
 				),
 			},
