@@ -201,11 +201,7 @@ function CollectionPage() {
 						<Image radius="sm" src={placeholder_collection} m="auto" className={classes.imgMain} />
 					</div>
 
-					{/* {isEdit? 
-					:
-					
-					
-					} */}
+				
 					<Group m="auto">
 						{isEdit ? (
 							<Input
@@ -274,11 +270,11 @@ function CollectionPage() {
 						</Anchor>
 					</Text>
 					{isEdit && (
-						<CharacteristicsForm fields={fields} setFields={setFields} />
+						<CharacteristicsForm fields={fields} setFields={setFields} charsctsType='setInputTypes'/>
 					)}
 					<Group className={classes.tags}>{tagDiv}</Group>
 
-					{isEdit && (
+					{isEdit ? (
 						<RichTextEditor editor={editor} mt="1em" mb="-0.5m">
 							<RichTextEditor.Toolbar sticky stickyOffset={60}>
 								<RichTextEditor.ColorPicker
@@ -326,8 +322,7 @@ function CollectionPage() {
 
 							<RichTextEditor.Content />
 						</RichTextEditor>
-					)}
-					<Text
+					) : <Text
 						style={{
 							fontSize: 14,
 							textAlign: 'center',
@@ -335,8 +330,8 @@ function CollectionPage() {
 						mt="1em"
 						mb="20px"
 						span
-						// dangerouslySetInnerHTML={{ __html: htmlString }}
-						// dangerouslySetInnerHTML={getDescriptionText()}
+					// dangerouslySetInnerHTML={{ __html: htmlString }}
+					// dangerouslySetInnerHTML={getDescriptionText()}
 					>
 						{/* {getDescriptionText()} */}
 						{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
@@ -357,7 +352,8 @@ function CollectionPage() {
 								</>
 							)}
 						</Button>
-					</Text>
+					</Text>}
+					
 					<Text
 						style={{
 							fontSize: 24,

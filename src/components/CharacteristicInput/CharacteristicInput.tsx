@@ -1,5 +1,4 @@
 import {
-	MantineProvider,
 	TextInput,
 	Textarea,
 	Checkbox,
@@ -11,7 +10,6 @@ import {
 	ComboboxItem,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
-import { useState} from 'react';
 import { IconPlus, IconTrashX } from '@tabler/icons-react';
 const FieldTypeInput = ({ fieldType, onChange, value }) => {
 	switch (fieldType) {
@@ -50,30 +48,28 @@ const FieldTypeInput = ({ fieldType, onChange, value }) => {
 	}
 };
 
-const allowedTypes = [
-	'integer',
-	'string',
-	'multi-line',
-	'logical',
-	'date',
-];
+const allowedTypes = ['integer', 'string', 'multi-line', 'logical', 'date'];
 
-type FieldType = 'integer' | 'string' | 'multiline' | 'checkbox' | 'date' | '';
+type FieldType = 'integer' | 'string' | 'multi-line' | 'logical' | 'date' | '';
 
 interface Field {
-  type: FieldType;
-  name: string;
-  value: string | number | boolean | Date; // Accommodate different value types
+	type: FieldType;
+	name: string;
+	value: string | number | boolean | Date; // Accommodate different value types
 }
 export type Fields = Field[];
 
 type CharacteristicsFormProps = {
-	fields: Fields
-	setFields: (fields: Fields) => void
-}
+	fields: Fields;
+	setFields: (fields: Fields) => void;
+	charsctsType: 'setValues' | 'setInputTypes';
+};
 
-const CharacteristicsForm = ({fields, setFields}: CharacteristicsFormProps) => {
-
+const CharacteristicsForm = ({
+	fields,
+	setFields,
+	charsctsType,
+}: CharacteristicsFormProps) => {
 	// const [fields, setFields] = useState<Fields>(initFields);
 	const addField = () => {
 		if (fields.length >= 15) return;
@@ -99,21 +95,22 @@ const CharacteristicsForm = ({fields, setFields}: CharacteristicsFormProps) => {
 
 	const optionsFilter: OptionsFilter = ({ options }) => {
 		return (options as ComboboxItem[]).filter((option) => {
-			  return fields.filter(field=>field.type === option.label).length < 3;
+			return fields.filter((field) => field.type === option.label).length < 3;
 		});
-	  };
+	};
 
 	return (
 		<div>
 			{fields.map((field, index) => (
-				<MantineProvider>
-					<Group
-						key={index}
-						style={{
-							marginBottom: 10,
-						}}
-						justify="center"
-					>
+				<Group
+					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+					key={index}
+					style={{
+						marginBottom: 10,
+					}}
+					justify= {charsctsType === 'setInputTypes' ? 'center' : 'start'}
+				>
+					{charsctsType === 'setInputTypes' && (
 						<Select
 							allowDeselect={false}
 							// defaultValue='string'
@@ -122,40 +119,45 @@ const CharacteristicsForm = ({fields, setFields}: CharacteristicsFormProps) => {
 							value={field.type}
 							onChange={(value) => updateField(index, 'type', value)}
 							defaultValue="integer"
-							maw='8em'
+							maw="8em"
 						/>
+					)}
 
-						<TextInput
-							placeholder="Name"
-							value={field.name}
-							onChange={(event) =>
-								updateField(index, 'name', event.currentTarget.value)
-							}
-						/>
+					<TextInput
+						placeholder="Name"
+						value={field.name}
+						onChange={(event) =>
+							updateField(index, 'name', event.currentTarget.value)
+						}
+						disabled={charsctsType==='setValues'}
+					/>
 
-						{/* // TODO this is for item page, not for collection */}
-						{/* <FieldTypeInput
+					{/* // TODO this is for item page, not for collection */}
+					{charsctsType === 'setValues' ? (
+						<FieldTypeInput
 							fieldType={field.type}
 							value={field.value}
 							onChange={(value) => {
-								value.target? updateField(index, 'value', value.target.value) : updateField(index, 'value', value);
+								value.target
+									? updateField(index, 'value', value.target.value)
+									: updateField(index, 'value', value);
 							}}
-						/> */}
+						/>
+					) : <Button
+						onClick={() => deleteField(index)}
+						variant="subtle"
+						color="red"
+						style={{
+							minWidth: 'auto',
+						}}
+					>
+						<IconTrashX size={18} />
+					</Button>}
 
-						<Button
-							onClick={() => deleteField(index)}
-							variant="subtle"
-							color="red"
-							style={{
-								minWidth: 'auto',
-							}}
-						>
-							<IconTrashX size={18} />
-						</Button>
-					</Group>
-				</MantineProvider>
+						
+				</Group>
 			))}
-			<Box
+			{charsctsType === 'setInputTypes' && <Box
 				style={{
 					display: 'flex',
 					justifyContent: 'center',
@@ -165,7 +167,7 @@ const CharacteristicsForm = ({fields, setFields}: CharacteristicsFormProps) => {
 				<Button leftSection={<IconPlus />} onClick={addField} mb="2em">
 					Add new characteristic
 				</Button>
-			</Box>
+			</Box>}
 		</div>
 	);
 };
