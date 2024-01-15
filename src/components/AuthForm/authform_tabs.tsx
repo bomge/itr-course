@@ -14,6 +14,7 @@ import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { SetStateAction } from 'react';
 import { FormType } from '../Header/Header';
 import { useMediaQuery } from '@mantine/hooks';
+import { useNavigate } from 'react-router-dom';
 interface AuthModalProps {
   toggle: (value?: SetStateAction<FormType> | undefined) => void
   activeTab: string;
@@ -36,6 +37,7 @@ export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal,
 				val.length <= 6 ? 'Password should include at least 6 characters' : null,
 		},
 	});
+	const navigate = useNavigate();
 
 	const signIn = useSignIn();
 	
@@ -48,11 +50,15 @@ export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal,
 			},
 			userState: {name: form.values.name, email: form.values.email}
 		  });
+
+		  // * temp fix before using normal store
+		  navigate('/refresh');
+		navigate(-1);
 		{/* @ts-expect-error  prost*/}
 		  setUser({name: form.values.name, email: form.values.email});
-		  closeModal();
-		  if(mobile)
-		  	openDrawer();
+		//   closeModal();
+		//   if(mobile)
+		//   	openDrawer();
 	  };
 
 	return (

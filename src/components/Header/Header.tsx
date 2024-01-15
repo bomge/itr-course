@@ -28,7 +28,7 @@ import siteIcon from '../../assets/collector-logo.svg';
 import classes from './Header.module.css';
 import { LanguagePicker } from './LanguagePicker/LanguagePicker';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthModal_tabs from '../AuthForm/authform_tabs';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
@@ -48,6 +48,7 @@ export default function Header() {
 	});
 	const dark = colorScheme === 'dark';
 
+	const navigate = useNavigate();
 	const authUser = useAuthUser() as UserState | null;
 	const signOut = useSignOut();
 	const [user, setUser] = useState<UserState | null>(authUser);
@@ -194,7 +195,9 @@ export default function Header() {
 											<Menu.Item
 												onClick={() => {
 													signOut();
-													setUser(null);
+													// setUser(null);
+													navigate('/refresh');
+													navigate(-1);
 												}}
 												leftSection={
 													<IconLogout

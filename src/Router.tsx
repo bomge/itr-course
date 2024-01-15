@@ -34,6 +34,14 @@ const router = createBrowserRouter([
 					</Suspense>
 				),
 			},
+			{
+				path: '/collection/:collectiID/addItem',
+				element: (
+					<Suspense fallback="Загрузка...">
+						Страница добавления итема
+					</Suspense>
+				),
+			},
 		],
 	},
 ]);

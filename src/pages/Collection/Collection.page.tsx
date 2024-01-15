@@ -11,6 +11,7 @@ import {
 	ActionIcon,
 	Anchor,
 	Input,
+	Card,
 } from '@mantine/core';
 import {
 	IconColorPicker,
@@ -33,6 +34,9 @@ import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
 import Highlight from '@tiptap/extension-highlight';
 import ItemCard_simple from '@/components/Cards/ItemCard_simple/ItemCard_simple';
+import CharacteristicsForm, {
+	Fields,
+} from '@/components/CharacteristicInput/CharacteristicInput';
 export type ItemCardCollectionPage = {
 	img: string;
 	title: string;
@@ -89,9 +93,24 @@ const initTitle = 'Rarest books est 1980';
 
 const maxDescriptionLength = 145;
 
+const initFields: Fields = [
+	{
+		name: 'Name1',
+		type: 'string',
+		value: 'value1',
+	},
+	{
+		name: 'name2',
+		type: 'integer',
+		value: '123',
+	},
+];
+
 function CollectionPage() {
 	const [expand, setExpand] = useState(false);
 	const [liked, setLiked] = useState(true);
+
+	const [fields, setFields] = useState<Fields>(initFields);
 
 	const author = 'Oleg Popov';
 	const authorId = '1';
@@ -129,9 +148,32 @@ function CollectionPage() {
 
 	const itemsDiv = fakeItems_collectPage.map((item, i) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-		<ItemCard_simple item={item} key={i}/>
-		
+		<ItemCard_simple item={item} key={i} />
 	));
+	itemsDiv.unshift(
+		<Link to={'/collection/1/addItem'}>
+			<Card
+				style={{
+					padding: 0,
+					minWidth: 160,
+					minHeight: '14.5em',
+					textAlign: 'center',
+					margin: '0 auto',
+					justifyContent: 'center',
+				}}
+				withBorder
+				radius="md"
+				className="hoverTransform"
+			>
+				{' '}
+				<IconPlus size="100px" style={{ margin: 'auto' }} />
+			</Card>
+		</Link>
+		,
+	);
+	// itemsDiv.shift(
+
+	// );
 
 	const editor = useEditor({
 		extensions: [StarterKit, TextStyle, Color, Underline, Highlight],
@@ -235,7 +277,9 @@ function CollectionPage() {
 							{author}
 						</Anchor>
 					</Text>
-
+					{isEdit && (
+						<CharacteristicsForm fields={fields} setFields={setFields} />
+					)}
 					<Group className={classes.tags}>{tagDiv}</Group>
 
 					{isEdit && (
