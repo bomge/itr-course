@@ -2,6 +2,14 @@
 	color: light-dark(var(--mantine-color-dark-4), var(--mantine-color-gray-3));
 }
 
+.imgMain{
+	width: 360px;
+	
+	@media (max-width: $mantine-breakpoint-sm) {
+		width: 100%;
+	  }
+}
+
 .descr-btn:hover {
 	background-color: transparent;
 	/* color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6)); */

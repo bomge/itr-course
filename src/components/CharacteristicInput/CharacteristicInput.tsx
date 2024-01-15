@@ -121,6 +121,8 @@ const CharacteristicsForm = ({fields, setFields}: CharacteristicsFormProps) => {
 							data={allowedTypes}
 							value={field.type}
 							onChange={(value) => updateField(index, 'type', value)}
+							defaultValue="integer"
+							maw='8em'
 						/>
 
 						<TextInput

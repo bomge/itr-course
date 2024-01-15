@@ -151,7 +151,7 @@ function CollectionPage() {
 		<ItemCard_simple item={item} key={i} />
 	));
 	itemsDiv.unshift(
-		<Link to={'/collection/1/addItem'}>
+		<Anchor component={Link} m='auto' to={'/collection/1/addItem'} key={itemsDiv.length+1}>
 			<Card
 				style={{
 					padding: 0,
@@ -168,13 +168,9 @@ function CollectionPage() {
 				{' '}
 				<IconPlus size="100px" style={{ margin: 'auto' }} />
 			</Card>
-		</Link>
-		,
+		</Anchor>
+		
 	);
-	// itemsDiv.shift(
-
-	// );
-
 	const editor = useEditor({
 		extensions: [StarterKit, TextStyle, Color, Underline, Highlight],
 		content: description,
@@ -202,7 +198,7 @@ function CollectionPage() {
 							{isEdit ? 'Save' : 'Edit'}{' '}
 						</Button>
 
-						<Image radius="sm" src={placeholder_collection} w="360" m="auto" />
+						<Image radius="sm" src={placeholder_collection} m="auto" className={classes.imgMain} />
 					</div>
 
 					{/* {isEdit? 
