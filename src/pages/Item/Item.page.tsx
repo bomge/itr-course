@@ -53,6 +53,26 @@ const initFields: Fields = [
 		type: 'date',
 		value: '',
 	},
+	{
+		name: 'name4',
+		type: 'date',
+		value: '',
+	},
+	{
+		name: 'name4',
+		type: 'date',
+		value: '',
+	},
+	{
+		name: 'name4',
+		type: 'date',
+		value: '',
+	},
+	{
+		name: 'name4',
+		type: 'date',
+		value: '',
+	},
 ];
 
 export default function ItemPage() {
@@ -143,6 +163,7 @@ export default function ItemPage() {
 					style={{
 						marginRight: '20px',
 						position: 'relative',
+						height: 'fit-content'
 					}}
 				>
 					<Image
