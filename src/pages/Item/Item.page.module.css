@@ -1,7 +1,8 @@
 .item-description{
 	@media (max-width: $mantine-breakpoint-sm) {
-		margin-left: 19%;
+		/* margin-left: 19%; */
 	  }
+	  width: fit-content;
 }
 
 .descr-btn {
@@ -25,4 +26,12 @@
 
 .comment-text{
 	color: light-dark(rgb(24 57 60), #7f8c8d);
+}
+
+.tags{
+	/* margin-bottom: 10px; */
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	margin: auto;
 }

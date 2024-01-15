@@ -13,6 +13,8 @@ import {
 	Avatar,
 	Table,
 	Anchor,
+	useMantineColorScheme,
+	Group,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import { IconBrandTelegram, IconHeart } from '@tabler/icons-react';
@@ -23,6 +25,9 @@ import { Link } from 'react-router-dom';
 import CharacteristicsForm, {
 	Fields,
 } from '@/components/CharacteristicInput/CharacteristicInput';
+import BadgeInputForm, {
+	Badges,
+} from '@/components/BadgeInputForm/BadgeInputForm';
 
 const author = 'Oleg Petrov';
 const authorId = '1';
@@ -34,44 +39,34 @@ const initFields: Fields = [
 		value: 'value1',
 	},
 	{
-		name: 'name2',
+		name: 'integer',
 		type: 'integer',
 		value: '123',
 	},
 	{
-		name: 'name3',
+		name: 'multi-line',
 		type: 'multi-line',
-		value: '',
+		value: '1\n2',
 	},
 	{
-		name: 'name4',
+		name: 'logical',
 		type: 'logical',
-		value: '',
+		value: true,
 	},
 	{
-		name: 'name4',
+		name: 'date',
 		type: 'date',
-		value: '',
+		value: new Date(),
+	}
+];
+const initBadges: Badges = [
+	{
+		color: 'yellow',
+		text: 'Yellow',
 	},
 	{
-		name: 'name4',
-		type: 'date',
-		value: '',
-	},
-	{
-		name: 'name4',
-		type: 'date',
-		value: '',
-	},
-	{
-		name: 'name4',
-		type: 'date',
-		value: '',
-	},
-	{
-		name: 'name4',
-		type: 'date',
-		value: '',
+		color: 'grape',
+		text: 'grape',
 	},
 ];
 
@@ -81,51 +76,36 @@ export default function ItemPage() {
 	const [title, setTitle] = useState('библия');
 
 	const [fields, setFields] = useState<Fields>(initFields);
+	const [badges, setBadges] = useState<Badges>(initBadges);
 	const [isEdit, setIsEdit] = useState(false);
 
 	const authUser = useAuthUser();
-	console.log(fields);
-	// const [newCharacteristics, setNewCharacteristics] = useState([]);
-	// const characteristics = [
-	// 	{
-	// 		label: 'Author',
-	// 		value: 'Иисус',
-	// 	},
-	// 	{
-	// 		label: 'Year',
-	// 		value: '1856',
-	// 	},
-	// 	{
-	// 		label: 'Rare',
-	// 		value: 'true',
-	// 	},
-	// 	{
-	// 		label: 'Publisher',
-	// 		value: 'Publisher Name',
-	// 	},
-	// 	{
-	// 		label: 'Pages',
-	// 		value: '300',
-	// 	},
-	// 	{
-	// 		label: 'Language',
-	// 		value: 'Russian',
-	// 	},
-	// 	{
-	// 		label: 'Genre',
-	// 		value: 'Fiction',
-	// 	},
-	// ];
-	const characteristics = fields.map((field) => {
-		return { label: field.name, value: field.value instanceof Date ? field.value.toLocaleDateString() :field.value.toString() };
+
+	const { colorScheme } = useMantineColorScheme({
+		keepTransitions: true,
 	});
-	// const addCharacteristics = (label, value) => {
-	// 	const newChar = {
-	// 		label,
-	// 		value,
-	// 	};
-	// 	setNewCharacteristics([...newCharacteristics, newChar]);
-	// };
+	const dark = colorScheme === 'dark';
+
+	const characteristics = fields.map((field) => {
+		return {
+			label: field.name,
+			value:
+				field.value instanceof Date
+					? field.value.toLocaleDateString()
+					: field.value.toString(),
+		};
+	});
+	const tagDiv = badges.map((tag, i) => (
+		<Badge
+			color={tag.color}
+			size="sm"
+			variant={dark ? 'outline' : 'light'}
+			// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+			key={i}
+		>
+			{tag.text}
+		</Badge>
+	));
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -163,7 +143,7 @@ export default function ItemPage() {
 					style={{
 						marginRight: '20px',
 						position: 'relative',
-						height: 'fit-content'
+						height: 'fit-content',
 					}}
 				>
 					<Image
@@ -195,41 +175,36 @@ export default function ItemPage() {
 				</div>
 
 				<div className={classes['item-description']}>
-					{isEdit ? <TextInput
-						value={title}
-						onChange={(event) => setTitle(event.currentTarget.value)}
-						style={{
-							fontSize: 30,
-							fontWeight: 700,
-							textAlign: 'center',
-						}}
-						// w='2em'
-						mt="0.4em"
-						mb="0.0em"
-						pb="0"
-						// h='0.3em'
-					/> :
-						<><Title
-							order={1}
+					{isEdit ? (
+						<TextInput
+							value={title}
+							onChange={(event) => setTitle(event.currentTarget.value)}
 							style={{
-								fontSize: '26px',
-								color: '#e74c3c',
+								fontSize: 30,
+								fontWeight: 700,
+								textAlign: 'center',
 							}}
-						>
-							{title}
-							<Badge
+							// w='2em'
+							mt="0.4em"
+							mb="0.0em"
+							pb="0"
+							w='65%'
+							// h='0.3em'
+						/>
+					) : (
+						<div style={{maxWidth:'20%'}}>
+
+							<Title
+								order={1}
 								style={{
-									marginLeft: '10px',
-									backgroundColor: '#f1c40f',
-									color: 'white',
+									fontSize: '26px',
+									color: '#e74c3c',
 								}}
 							>
-							old
-							</Badge>
-						</Title></>
-					}
-					
-					
+								{title}
+							</Title>
+						</div>
+					)}
 
 					<Text truncate="end" className={classes.author} mt="-7px" mb="5px">
 						by&nbsp;
@@ -245,19 +220,34 @@ export default function ItemPage() {
 							{author}
 						</Anchor>
 					</Text>
-					<Button onClick={() => setIsEdit((v) => !v)}>
-						{isEdit ? 'Save' : 'Edit'}{' '}
-					</Button>
+
+					<Group className={classes.tags} mt="0.6em" mb="0.3em">
+						{tagDiv}
+					</Group>
+
+					{isEdit && (
+						<>
+							<br />
+							<div style={{ textAlign: 'center', width: '100%' }}>Tags</div>
+							<BadgeInputForm badges={badges} setBadges={setBadges} />
+						</>
+					)}
 
 					{isEdit ? (
-						<CharacteristicsForm
-							fields={fields}
-							setFields={setFields}
-							charsctsType="setValues"
-						/>
+						<>
+							<br />
+							<div style={{ textAlign: 'center', width: '100%' }}>
+								Characteristics
+							</div>
+							<CharacteristicsForm
+								fields={fields}
+								setFields={setFields}
+								charsctsType="setValues"
+							/>
+						</>
 					) : (
-						<Table>
-							<tbody>
+						<Table w='fit-content'>
+							<tbody >
 								{characteristics
 									.slice(0, showMore ? characteristics.length : 3)
 									.map((char) => (
@@ -273,27 +263,22 @@ export default function ItemPage() {
 							</tbody>
 						</Table>
 					)}
-					{!isEdit && characteristics.length>3 && <Button
-						onClick={() => setShowMore(!showMore)}
-						color="nonde"
-						className={classes['descr-btn']}
-					>
-						{showMore ? 'Show Less' : 'Show More'}
-					</Button>}
-
-					{/* <TextInput
-							placeholder="Add new characteristic"
-							rightSection={
-								<ActionIcon
-									onClick={() => addCharacteristics('New Label', 'New Value')}
-								>
-									<IconBrandTelegram size={16} />
-								</ActionIcon>
-							}
-							style={{
-								paddingRight: '30px',
-							}}
-						/> */}
+					{!isEdit && characteristics.length > 3 && (
+						<div style={{width:'100%'}}>
+							<Button
+								onClick={() => setShowMore(!showMore)}
+								color="nonde"
+								className={classes['descr-btn']}
+							>
+								{showMore ? 'Show Less' : 'Show More'}
+							</Button>
+						</div>
+						
+					)}
+					<br />
+					<Button onClick={() => setIsEdit((v) => !v)} mt='2em'>
+						{isEdit ? 'Save' : 'Edit'}{' '}
+					</Button>
 				</div>
 			</Paper>
 
