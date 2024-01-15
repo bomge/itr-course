@@ -70,7 +70,6 @@ const BadgeInputForm = ({
 	const updateField = (index: number, key: keyof Badge, newValue) => {
 		const newFields = [...badges];
 		newFields[index][key] = newValue;
-		console.log(newValue);
 		setBadges(newFields);
 	};
 

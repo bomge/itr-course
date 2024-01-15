@@ -99,7 +99,8 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 						</Anchor>
 					</Text>
 				</Flex>
-				<Anchor component={Link} to={`/collection/${collectionId}`} underline="never">
+				<Text mb='-7px' color='#808080'>Collection:</Text>
+				<Anchor component={Link} to={`/collection/${collectionId}`} underline="never" inherit>
 					<Text
 						size="sm"
 						// style={{
@@ -107,7 +108,7 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 						// 	textDecoration: 'none',
 						// }}
 						className={classes.description}
-						// color='red'
+					// color='red'
 					>
 						{/* {truncatedDescr} */}
 						{collectionName}
