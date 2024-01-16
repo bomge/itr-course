@@ -1,0 +1,5 @@
+.trashBtn {
+	@media (max-width: $mantine-breakpoint-xs) {
+		padding: 0;
+	  }
+}

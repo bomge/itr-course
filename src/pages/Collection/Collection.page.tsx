@@ -189,10 +189,11 @@ function CollectionPage() {
 						{'collections -> rarest books est 1980'}
 					</Text>
 
-					<div style={{ position: 'relative' }}>
+					<div style={{ position: 'relative', display:'flex', alignSelf:'center' }}>
 						<Button
 							pos="absolute"
 							right="0"
+							top='0.5em'
 							onClick={() => setIsEdit((v) => !v)}
 						>
 							{isEdit ? 'Save' : 'Edit'}{' '}
@@ -316,8 +317,9 @@ function CollectionPage() {
 									<RichTextEditor.Strikethrough />
 									<RichTextEditor.Highlight />
 									<RichTextEditor.Code />
-									<RichTextEditor.ClearFormatting />
 								</RichTextEditor.ControlsGroup>
+								<RichTextEditor.ClearFormatting />
+
 							</RichTextEditor.Toolbar>
 
 							<RichTextEditor.Content />

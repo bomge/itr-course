@@ -58,6 +58,7 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 			withBorder
 			radius='lg'
 			className='hoverTransform'
+			mih='16.5em'
 		>
 			<CardSection>
 				<div className={classes.cardSection}>

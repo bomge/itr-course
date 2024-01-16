@@ -172,6 +172,9 @@ export default function ItemPage() {
 							fill={liked ? 'red' : 'transparent'}
 						/>
 					</ActionIcon>
+					<Button onClick={() => setIsEdit((v) => !v)} pos='absolute' right='0' top='0.5em'>
+						{isEdit ? 'Save' : 'Edit'}{' '}
+					</Button>
 				</div>
 
 				<div className={classes['item-description']}>
@@ -276,9 +279,7 @@ export default function ItemPage() {
 						
 					)}
 					<br />
-					<Button onClick={() => setIsEdit((v) => !v)} mt='2em'>
-						{isEdit ? 'Save' : 'Edit'}{' '}
-					</Button>
+					
 				</div>
 			</Paper>
 

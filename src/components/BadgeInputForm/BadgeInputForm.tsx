@@ -91,7 +91,7 @@ const BadgeInputForm = ({
 						value={field.color}
 						onChange={(value) => updateField(index, 'color', value)}
 						defaultValue="grape"
-						maw="8em"
+						maw="7em"
 						placeholder="Color"
 					/>
 

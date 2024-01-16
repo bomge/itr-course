@@ -11,7 +11,8 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { IconPlus, IconTrashX } from '@tabler/icons-react';
-const FieldTypeInput = ({ fieldType, onChange, value }) => {
+import classes from './CharacteristicInput.module.css';
+const FieldTypeInput = ({ fieldType, onChange, value, ...props }) => {
 	switch (fieldType) {
 	case 'integer':
 		return (
@@ -20,14 +21,15 @@ const FieldTypeInput = ({ fieldType, onChange, value }) => {
 				onChange={onChange}
 				value={value}
 				placeholder="value"
+				{...props}
 			/>
 		);
 	case 'string':
 		return (
-			<TextInput onChange={onChange} value={value} placeholder="value" />
+			<TextInput onChange={onChange} value={value} placeholder="value" {...props} />
 		);
 	case 'multi-line':
-		return <Textarea onChange={onChange} value={value} placeholder="value" />;
+		return <Textarea onChange={onChange} value={value} placeholder="value" {...props} />;
 	case 'logical':
 		return (
 			<Checkbox
@@ -41,6 +43,7 @@ const FieldTypeInput = ({ fieldType, onChange, value }) => {
 				onChange={onChange}
 				value={value}
 				placeholder="value"
+				{...props}
 			/>
 		);
 	default:
@@ -119,12 +122,13 @@ const CharacteristicsForm = ({
 							value={field.type}
 							onChange={(value) => updateField(index, 'type', value)}
 							defaultValue="integer"
-							maw="8em"
+							w="7em"
 						/>
 					)}
 
 					<TextInput
 						placeholder="Name"
+						w='8em'
 						value={field.name}
 						onChange={(event) =>
 							updateField(index, 'name', event.currentTarget.value)
@@ -135,6 +139,7 @@ const CharacteristicsForm = ({
 					{/* // TODO this is for item page, not for collection */}
 					{charsctsType === 'setValues' ? (
 						<FieldTypeInput
+							w='10.5em'
 							fieldType={field.type}
 							value={field.value}
 							onChange={(value) => {
@@ -150,6 +155,7 @@ const CharacteristicsForm = ({
 						style={{
 							minWidth: 'auto',
 						}}
+						className={classes.trashBtn}
 					>
 						<IconTrashX size={18} />
 					</Button>}

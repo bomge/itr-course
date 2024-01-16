@@ -43,8 +43,9 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 				style={{ textDecoration: 'none' }}
 				withBorder
 				radius='lg'
-				className='hoverTransform'
+				className='hoverTransform card'
 				// m="auto"
+				mih='16.5em'
 			>
 				<CardSection>
 					<div className={classes.cardSection}>
