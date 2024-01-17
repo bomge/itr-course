@@ -8,7 +8,11 @@ export default function HeroBullets() {
 			<div className={classes.inner}>
 				<div className={classes.content}>
 					<Title className={classes.title}>
-						<span className={classes.highlight}>EXPLORE</span>  <br /> UNIQUE <br/> RAREST <br/> COLLECTIONS
+						<div style={{width:'100%'}}>
+
+							<span className={classes.highlight}>EXPLORE</span>
+						</div>
+						 UNIQUE <br/> RAREST <br/> COLLECTIONS
 					</Title>
 					{/* <Text c="dimmed" mt="md" hiddenFrom='sm_og'>
 					Discover one-of-a-kind collections from passionate enthusiasts around the world. 
