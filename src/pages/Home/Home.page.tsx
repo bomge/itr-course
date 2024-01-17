@@ -26,7 +26,7 @@ export interface IItemCard{
 	collectionId: string;
 }
 
-const fakeCollections: ICollectionCard[] = [
+export const fakeCollections: ICollectionCard[] = [
 	{
 		title: 'Rarest books est 1980',
 		author: 'Oleg Petrov',
@@ -123,7 +123,7 @@ const fakeCollections: ICollectionCard[] = [
 		liked: false,
 	},
 ];
-const fakeCards: IItemCard[] = [
+export const fakeCards: IItemCard[] = [
 	{
 	  title:'Ancient Pottery',
 	  author:'Sara Smith',

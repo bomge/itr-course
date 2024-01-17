@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 import { HomePage } from './pages/Home/Home.page';
 import CollectionPage from './pages/Collection/Collection.page';
 import ItemPage from './pages/Item/Item.page';
+import SearchPage from './pages/Search/Search.page';
 
 const router = createBrowserRouter([
 	{
@@ -39,6 +40,30 @@ const router = createBrowserRouter([
 				element: (
 					<Suspense fallback="Загрузка...">
 						Страница добавления итема
+					</Suspense>
+				),
+			},
+			{
+				path: '/search',
+				element: (
+					<Suspense fallback="Загрузка...">
+						<SearchPage/>
+					</Suspense>
+				),
+			},
+			{
+				path: '/user/:authorId',
+				element: (
+					<Suspense fallback="Загрузка...">
+						<SearchPage/>
+					</Suspense>
+				),
+			},
+			{
+				path: '/collection/createNew',
+				element: (
+					<Suspense fallback="Загрузка...">
+						Страница создания коллекции
 					</Suspense>
 				),
 			},

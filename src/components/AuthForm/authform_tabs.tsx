@@ -48,7 +48,7 @@ export default function AuthModal_tabs({ toggle, activeTab, setUser, closeModal,
 			auth: {
 				  token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZXhwIjo4MDA4NjA1MTk1fQ.ijw603AjpAqNwnUXmv6YB5L6m5aL-llIgBsTJo-k2r8'
 			},
-			userState: {name: form.values.name, email: form.values.email}
+			userState: {name: 'Uladzilsau', email: form.values.email, id:'321'}
 		  });
 
 		  // * temp fix before using normal store
