@@ -19,6 +19,7 @@ import {
 import { useEffect, useState } from 'react';
 import { IconBrandTelegram, IconHeart } from '@tabler/icons-react';
 import placeholder_item from '../../assets/product-placeholder.png';
+// import placeholder_item2 from '../../assets/Без названия.jpg';
 import classes from './Item.page.module.css';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import { Link } from 'react-router-dom';
@@ -34,7 +35,7 @@ const authorId = '1';
 
 const initFields: Fields = [
 	{
-		name: 'Name1',
+		name: 'string',
 		type: 'string',
 		value: 'value1',
 	},
@@ -87,6 +88,7 @@ export default function ItemPage() {
 	const dark = colorScheme === 'dark';
 
 	const characteristics = fields.map((field) => {
+		
 		return {
 			label: field.name,
 			value:
@@ -110,295 +112,294 @@ export default function ItemPage() {
 		window.scrollTo(0, 0);
 	}, []);
 	return (
-		<div
-			style={{
-				padding: '20px',
-				marginTop: '3em',
-			}}
-		>
-			<Text
-				style={{
-					marginBottom: '20px',
-					fontSize: '14px',
-					// color: '#34495e',
-				}}
-				// className={classes.navText}
-			>
-				{'collection->rarest books est 1980->items->библия'}
-			</Text>
-
-			<Paper
-				style={{
-					display: 'flex',
-					padding: '20px',
-					flexWrap: 'wrap',
-				}}
-				styles={{
-					root: {
-						marginLeft: '8%',
-					},
-				}}
-			>
-				<div
-					style={{
-						marginRight: '20px',
-						position: 'relative',
-						height: 'fit-content',
-					}}
-				>
-					<Image
-						src={placeholder_item}
-						alt="Book cover"
-						style={{
-							width: '300px',
-							height: '400px',
-							//   objectFit: 'cover',
-						}}
-					/>
-					<ActionIcon
-						// className={classes['cardSection-icon']}
-						variant="transparent"
-						// color="gray"
-						style={{
-							position: 'absolute',
-							left: '270px',
-							bottom: '10px',
-						}}
-						onClick={() => setLiked((prev) => !prev)}
-					>
-						<IconHeart
-							size={24}
-							color="red"
-							fill={liked ? 'red' : 'transparent'}
-						/>
-					</ActionIcon>
-					<Button onClick={() => setIsEdit((v) => !v)} pos='absolute' right='0' top='0.5em'>
-						{isEdit ? 'Save' : 'Edit'}{' '}
-					</Button>
-				</div>
-
-				<div className={classes['item-description']}>
-					{isEdit ? (
-						<TextInput
-							value={title}
-							onChange={(event) => setTitle(event.currentTarget.value)}
-							style={{
-								fontSize: 30,
-								fontWeight: 700,
-								textAlign: 'center',
-							}}
-							// w='2em'
-							mt="0.4em"
-							mb="0.0em"
-							pb="0"
-							w='65%'
-							// h='0.3em'
-						/>
-					) : (
-						<div style={{maxWidth:'20%'}}>
-
-							<Title
-								order={1}
-								style={{
-									fontSize: '26px',
-									color: '#e74c3c',
-								}}
-							>
-								{title}
-							</Title>
-						</div>
-					)}
-
-					<Text truncate="end" className={classes.author} mt="-7px" mb="5px">
-						by&nbsp;
-						{/* <a href={authorId} >{author}</a> */}
-						<Anchor
-							size="14px"
-							className={classes.author}
-							component={Link}
-							to={`/user/${authorId}`}
-							target="_blank"
-							underline="never"
-						>
-							{author}
-						</Anchor>
-					</Text>
-
-					<Group className={classes.tags} mt="0.6em" mb="0.3em">
-						{tagDiv}
-					</Group>
-
-					{isEdit && (
-						<>
-							<br />
-							<div style={{ textAlign: 'center', width: '100%' }}>Tags</div>
-							<BadgeInputForm badges={badges} setBadges={setBadges} />
-						</>
-					)}
-
-					{isEdit ? (
-						<>
-							<br />
-							<div style={{ textAlign: 'center', width: '100%' }}>
-								Characteristics
-							</div>
-							<CharacteristicsForm
-								fields={fields}
-								setFields={setFields}
-								charsctsType="setValues"
-							/>
-						</>
-					) : (
-						<Table w='fit-content'>
-							<tbody >
-								{characteristics
-									.slice(0, showMore ? characteristics.length : 3)
-									.map((char) => (
-										<tr className={classes.rows}>
-											<td>
-												<Text>{char.label}:</Text>
-											</td>
-											<td>
-												<Text ml="0.55em">{char.value}</Text>
-											</td>
-										</tr>
-									))}
-							</tbody>
-						</Table>
-					)}
-					{!isEdit && characteristics.length > 3 && (
-						<div style={{width:'100%'}}>
-							<Button
-								onClick={() => setShowMore(!showMore)}
-								color="nonde"
-								className={classes['descr-btn']}
-							>
-								{showMore ? 'Show Less' : 'Show More'}
-							</Button>
-						</div>
-						
-					)}
-					<br />
-					
-				</div>
-			</Paper>
-
-			<Paper
-				style={{
-					marginTop: '20px',
-					padding: '20px',
-					flexDirection: 'column',
-					margin: 'auto',
-				}}
-				display="flex"
-				maw="80vw"
-			>
-				<Title
-					order={2}
-					style={{
-						marginBottom: '10px',
-						color: '#34495e',
-						justifyContent: 'center',
-					}}
-					display="flex"
-				>
-					COMMENTS
-				</Title>
-				<Divider
+		<Box>
+			<Stack maw="80vw" m="auto" gap="0" mt="4em">
+				<Text
 					style={{
 						marginBottom: '20px',
+						fontSize: '14px',
+					// color: '#34495e',
 					}}
-				/>
-				<Stack>
-					<Box
+				// className={classes.navText}
+				>
+					{'collection->rarest books est 1980->items->библия'}
+				</Text>
+
+				<Paper
+					style={{
+						display: 'flex',
+						// padding: '20px',
+						flexWrap: 'wrap',
+					}}
+					styles={{
+						root: {
+							marginLeft: '8%',
+						},
+					}}
+					className={classes.paper}
+				>
+					<div
 						style={{
-							display: 'flex',
-							alignItems: 'center',
-							marginBottom: '10px',
+							marginRight: '20px',
+							position: 'relative',
+							height: 'fit-content',
 						}}
 					>
-						<Avatar
-							src="/placeholder.png"
-							alt="Petya"
+						<Image
+							src={placeholder_item}
+							// src={placeholder_item2}
+							alt="Book cover"
 							style={{
-								marginRight: '10px',
+								width: '300px',
+								height: '400px',
+							//   objectFit: 'cover',
 							}}
 						/>
-						<div>
-							<Text
-								style={{
-									fontWeight: 500,
-								}}
-							>
-								Petya
-							</Text>
-							<Text className={classes['comment-text']}>
-								Вау, супер крутая книга. Сам с женой её читаю
-							</Text>
-						</div>
-					</Box>
-					<Box
-						style={{
-							display: 'flex',
-							alignItems: 'center',
-							marginBottom: '20px',
-						}}
-					>
-						<Avatar
-							src="/placeholder.png"
-							alt="Ира"
+						<ActionIcon
+						// className={classes['cardSection-icon']}
+							variant="transparent"
+							// color="gray"
 							style={{
-								marginRight: '10px',
+								position: 'absolute',
+								left: '270px',
+								bottom: '10px',
 							}}
-						/>
-						<div>
-							<Text
-								style={{
-									fontWeight: 500,
-								}}
-							>
-								Ира
-							</Text>
-							<Text className={classes['comment-text']}>
-								Очень качественная книга, никогда подобного не читал. Вот что
-								нужно читать своим детям
-							</Text>
-						</div>
-					</Box>
-					<div className="comment-submit-section">
-						{authUser ? (
+							onClick={() => setLiked((prev) => !prev)}
+						>
+							<IconHeart
+								size={24}
+								color="red"
+								fill={liked ? 'red' : 'transparent'}
+							/>
+						</ActionIcon>
+						<Button onClick={() => setIsEdit((v) => !v)} pos='absolute' right='0' top='0.5em'>
+							{isEdit ? 'Save' : 'Edit'}{' '}
+						</Button>
+					</div>
+
+					<div className={classes['item-description']}>
+						{isEdit ? (
 							<TextInput
-								placeholder="Your comment"
-								rightSection={
-									<ActionIcon>
-										<IconBrandTelegram size={16} />
-									</ActionIcon>
-								}
-								style={
-									{
-										// paddingRight: '30px',
-									}
-								}
+								value={title}
+								onChange={(event) => setTitle(event.currentTarget.value)}
+								style={{
+									fontSize: 30,
+									fontWeight: 700,
+									textAlign: 'center',
+								}}
+								// w='2em'
+								mt="0.4em"
+								mb="0.0em"
+								pb="0"
+								w='65%'
+							// h='0.3em'
 							/>
 						) : (
-							<TextInput
-								placeholder="You must be logged in to comment"
-								disabled
-								rightSection={
-									<ActionIcon disabled>
-										<IconBrandTelegram size={16} />
-									</ActionIcon>
-								}
-								styles={{
-									input: {
-										textAlign: 'center',
-									},
+							<div style={{maxWidth:'20%'}}>
+
+								<Title
+									order={1}
+									style={{
+										fontSize: '26px',
+										color: '#e74c3c',
+									}}
+								>
+									{title}
+								</Title>
+							</div>
+						)}
+
+						<Text truncate="end" className={classes.author} mt="-7px" mb="5px">
+						by&nbsp;
+							{/* <a href={authorId} >{author}</a> */}
+							<Anchor
+								size="14px"
+								className={classes.author}
+								component={Link}
+								to={`/user/${authorId}`}
+								target="_blank"
+								underline="never"
+							>
+								{author}
+							</Anchor>
+						</Text>
+
+						<Group className={classes.tags} mt="0.6em" mb="0.3em">
+							{tagDiv}
+						</Group>
+
+						{isEdit && (
+							<>
+								<br />
+								<div style={{ textAlign: 'center', width: '100%' }}>Tags</div>
+								<BadgeInputForm badges={badges} setBadges={setBadges} />
+							</>
+						)}
+
+						{isEdit ? (
+							<>
+								<br />
+								<div style={{ textAlign: 'center', width: '100%' }}>
+								Characteristics
+								</div>
+								<CharacteristicsForm
+									fields={fields}
+									setFields={setFields}
+									charsctsType="setValues"
+								/>
+							</>
+						) : (
+							<Table w='fit-content'>
+								<tbody >
+									{characteristics
+										.slice(0, showMore ? characteristics.length : 3)
+										.map((char) => (
+											<tr className={classes.rows}>
+												<td>
+													<Text>{char.label}:</Text>
+												</td>
+												<td >
+													<Text ml="0.55em" style={{whiteSpace:'pre-wrap'}}>{char.value}</Text>
+												</td>
+											</tr>
+										))}
+								</tbody>
+							</Table>
+						)}
+						{!isEdit && characteristics.length > 3 && (
+							<div style={{width:'100%'}}>
+								<Button
+									onClick={() => setShowMore(!showMore)}
+									color="nonde"
+									className={classes['descr-btn']}
+								>
+									{showMore ? 'Show Less' : 'Show More'}
+								</Button>
+							</div>
+						
+						)}
+						<br />
+					
+					</div>
+				</Paper>
+
+				<Paper
+					style={{
+						marginTop: '20px',
+						padding: '20px',
+						flexDirection: 'column',
+						margin: 'auto',
+					}}
+					display="flex"
+					maw="80vw"
+				>
+					<Title
+						order={2}
+						style={{
+							marginBottom: '10px',
+							color: '#34495e',
+							justifyContent: 'center',
+						}}
+						display="flex"
+					>
+					COMMENTS
+					</Title>
+					<Divider
+						style={{
+							marginBottom: '20px',
+						}}
+					/>
+					<Stack>
+						<Box
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								marginBottom: '10px',
+							}}
+						>
+							<Avatar
+								src="/placeholder.png"
+								alt="Petya"
+								style={{
+									marginRight: '10px',
 								}}
 							/>
-						)}
-					</div>
-				</Stack>
-			</Paper>
-		</div>
+							<div>
+								<Text
+									style={{
+										fontWeight: 500,
+									}}
+								>
+								Petya
+								</Text>
+								<Text className={classes['comment-text']}>
+								Вау, супер крутая книга. Сам с женой её читаю
+								</Text>
+							</div>
+						</Box>
+						<Box
+							style={{
+								display: 'flex',
+								alignItems: 'center',
+								marginBottom: '20px',
+							}}
+						>
+							<Avatar
+								src="/placeholder.png"
+								alt="Ира"
+								style={{
+									marginRight: '10px',
+								}}
+							/>
+							<div>
+								<Text
+									style={{
+										fontWeight: 500,
+									}}
+								>
+								Ира
+								</Text>
+								<Text className={classes['comment-text']}>
+								Очень качественная книга, никогда подобного не читал. Вот что
+								нужно читать своим детям
+								</Text>
+							</div>
+						</Box>
+						<div className="comment-submit-section">
+							{authUser ? (
+								<TextInput
+									placeholder="Your comment"
+									rightSection={
+										<ActionIcon>
+											<IconBrandTelegram size={16} />
+										</ActionIcon>
+									}
+									style={
+										{
+										// paddingRight: '30px',
+										}
+									}
+								/>
+							) : (
+								<TextInput
+									placeholder="You must be logged in to comment"
+									disabled
+									rightSection={
+										<ActionIcon disabled>
+											<IconBrandTelegram size={16} />
+										</ActionIcon>
+									}
+									styles={{
+										input: {
+											textAlign: 'center',
+										},
+									}}
+								/>
+							)}
+						</div>
+					</Stack>
+				</Paper>
+			</Stack>
+		</Box>
 	);
 }

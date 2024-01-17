@@ -37,6 +37,7 @@ import ItemCard_simple from '@/components/Cards/ItemCard_simple/ItemCard_simple'
 import CharacteristicsForm, {
 	Fields,
 } from '@/components/CharacteristicInput/CharacteristicInput';
+import AddCard_SearchPage from '@/components/Cards/AddCard_SearchPage/AddCard_SearchPage';
 export type ItemCardCollectionPage = {
 	img: string;
 	title: string;
@@ -58,7 +59,7 @@ const fakeTags: ITag[] = [
 	},
 ];
 
-const fakeItems_collectPage: ItemCardCollectionPage[] = [
+export const fakeItems_collectPage: ItemCardCollectionPage[] = [
 	{
 		img: placeholder_item,
 		title: 'Бибилия',
@@ -151,24 +152,25 @@ function CollectionPage() {
 		<ItemCard_simple item={item} key={i} />
 	));
 	itemsDiv.unshift(
-		<Anchor component={Link} m='auto' to={'/collection/1/addItem'} key={itemsDiv.length+1}>
-			<Card
-				style={{
-					padding: 0,
-					minWidth: 160,
-					minHeight: '14.5em',
-					textAlign: 'center',
-					margin: '0 auto',
-					justifyContent: 'center',
-				}}
-				withBorder
-				radius="md"
-				className="hoverTransform"
-			>
-				{' '}
-				<IconPlus size="100px" style={{ margin: 'auto' }} />
-			</Card>
-		</Anchor>
+		// <Anchor component={Link} m='auto' to={'/collection/1/addItem'} key={itemsDiv.length+1}>
+		// 	<Card
+		// 		style={{
+		// 			padding: 0,
+		// 			minWidth: 160,
+		// 			minHeight: '14.5em',
+		// 			textAlign: 'center',
+		// 			margin: '0 auto',
+		// 			justifyContent: 'center',
+		// 		}}
+		// 		withBorder
+		// 		radius="md"
+		// 		className="hoverTransform"
+		// 	>
+		// 		{' '}
+		// 		<IconPlus size="100px" style={{ margin: 'auto' }} />
+		// 	</Card>
+		// </Anchor>
+		<AddCard_SearchPage key={itemsDiv.length+1} page='collection'/>
 		
 	);
 	const editor = useEditor({
@@ -182,7 +184,8 @@ function CollectionPage() {
 				<Stack maw="80vw" m="auto" gap="0" mt="4em">
 					<Text
 						style={{
-							fontSize: 12,
+							marginBottom: '20px',
+							fontSize: '14px',
 							// marginBottom: 10,
 						}}
 					>
@@ -263,15 +266,19 @@ function CollectionPage() {
 							component={Link}
 							size="14px"
 							className={classes['author-link']}
-							to={`/users/${authorId}`}
+							to={`/user/${authorId}`}
 							target="_blank"
 							underline="never"
 						>
 							{author}
 						</Anchor>
 					</Text>
-					{isEdit && (
+					{isEdit && (<>
+						<div style={{ textAlign: 'center', width: '100%' }}>
+						Characteristics
+						</div>
 						<CharacteristicsForm fields={fields} setFields={setFields} charsctsType='setInputTypes'/>
+					</>
 					)}
 					<Group className={classes.tags}>{tagDiv}</Group>
 

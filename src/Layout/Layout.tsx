@@ -8,7 +8,7 @@ export function Layout() {
 		<>
 			<div className={classes.content}>
 				<Header />
-				<div className={classes['main-content']}>
+				<div className={classes.content}>
 					<Outlet />
 				</div>
 			</div>
