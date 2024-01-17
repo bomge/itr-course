@@ -7,34 +7,26 @@ import {
 	Drawer,
 	ScrollArea,
 	rem,
-	Autocomplete,
 	Modal,
-	Avatar,
-	Menu,
 	Image,
 } from '@mantine/core';
 import { useDisclosure, useToggle } from '@mantine/hooks';
-import { ActionIcon, useMantineColorScheme } from '@mantine/core';
-import {
-	IconSun,
-	IconMoonStars,
-	IconSearch,
-	IconLogout,
-	IconPhotoStar,
-} from '@tabler/icons-react';
+
 
 import siteIcon from '../../assets/collector-logo.svg';
 
 import classes from './Header.module.css';
 import { LanguagePicker } from './LanguagePicker/LanguagePicker';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AuthModal_tabs from '../AuthForm/authform_tabs';
 import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
+import SearchBar from './SearchBar/SearchBar';
+import AvatarMenu from './AvatarMenu/AvatarMenu';
+import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher';
 
 export type FormType = 'login' | 'register';
-export type UserState = {name: string, email: string}
+export type UserState = {name: string, email: string, id:string}
 
 export default function Header() {
 	const [searchText, setSearchText] = useState('');
@@ -43,14 +35,9 @@ export default function Header() {
 	const [opened, { open, close }] = useDisclosure(false);
 	const [type, toggle] = useToggle<FormType>(['login', 'register']);
 
-	const { colorScheme, toggleColorScheme } = useMantineColorScheme({
-		keepTransitions: true,
-	});
-	const dark = colorScheme === 'dark';
 
-	const navigate = useNavigate();
+
 	const authUser = useAuthUser() as UserState | null;
-	const signOut = useSignOut();
 	const [user, setUser] = useState<UserState | null>(authUser);
 
 	function HandleLogBtn_modal() {
@@ -68,9 +55,9 @@ export default function Header() {
 		open();
 	}
 
+
 	return (
 		<div className={classes.mainHeader}>
-			{/* <div>{JSON.stringify(authUser)}</div> */}
 
 			<Modal
 				opened={opened}
@@ -133,83 +120,13 @@ export default function Header() {
 						</Group>
 
 						<Group visibleFrom="xxs">
-							<Autocomplete
-								placeholder="Search"
-								leftSection={
-									<IconSearch
-										style={{ width: rem(16), height: rem(16) }}
-										stroke={1.5}
-									/>
-								}
-								data={[
-									'React',
-									'Angular',
-									'Vue',
-									'Next.js',
-									'Riot.js',
-									'Svelte',
-									'Blitz.js',
-								]}
-								visibleFrom="xxs"
-								radius="md"
-								value={searchText}
-								onChange={setSearchText}
-							/>
+							<SearchBar value={searchText} setValue={setSearchText} />
+							
 							<Group visibleFrom="md">
 								<LanguagePicker />
-								<ActionIcon
-									//   variant="outline"
-									variant={dark ? 'default' : 'outline'}
-									color={dark ? 'yellow' : 'blue'}
-									onClick={() => toggleColorScheme()}
-									title="Toggle color scheme"
-									size="lg"
-								>
-									{dark ? (
-										<IconSun size="1.2rem" color="#FCC419" />
-									) : (
-										<IconMoonStars size="1.1rem" />
-									)}
-								</ActionIcon>
+								<ThemeSwitcher/>
 								{user ? (
-									<Menu>
-										<Menu.Target>
-											<Avatar color="gray" className={classes.avatar}/>
-										</Menu.Target>
-										<Menu.Dropdown>
-											<Menu.Label>
-												{user?.name || 'No Name'}
-												<br />
-												{user.email}
-											</Menu.Label>
-											<Menu.Item
-												leftSection={
-													<IconPhotoStar
-														style={{ width: rem(16), height: rem(16) }}
-														stroke={1.5}
-													/>
-												}
-											>
-												My collections
-											</Menu.Item>
-											<Menu.Item
-												onClick={() => {
-													signOut();
-													// setUser(null);
-													navigate('/refresh');
-													navigate(-1);
-												}}
-												leftSection={
-													<IconLogout
-														style={{ width: rem(16), height: rem(16) }}
-														stroke={1.5}
-													/>
-												}
-											>
-												Logout
-											</Menu.Item>
-										</Menu.Dropdown>
-									</Menu>
+									<AvatarMenu/>
 								) : (
 									<>
 										<Button
@@ -243,63 +160,10 @@ export default function Header() {
 					title={
 						<Group pb="0">
 							{user ? (
-								<Menu withArrow styles={{
-									dropdown:{
-										zIndex:9999999
-									}
-								}}>
-									<Menu.Target>
-										<Avatar color="gray" className={classes.avatar}/>
-									</Menu.Target>
-									<Menu.Dropdown>
-										<Menu.Label>
-											{user?.name || 'No Name'}
-											<br />
-											{user.email}
-										</Menu.Label>
-										<Menu.Item
-											leftSection={
-												<IconPhotoStar
-													style={{ width: rem(16), height: rem(16) }}
-													// color="yellow"
-													stroke={1.5}
-												/>
-											}
-										>
-												My collections
-										</Menu.Item>
-										<Menu.Item
-											onClick={() => {
-												signOut();
-												setUser(null);
-												closeDrawer();
-											}}
-											leftSection={
-												<IconLogout
-													style={{ width: rem(16), height: rem(16) }}
-													stroke={1.5}
-												/>
-											}
-										>
-												Logout
-										</Menu.Item>
-									</Menu.Dropdown>
-								</Menu>
+								<AvatarMenu/>
 							) : (<></>)}
 							<LanguagePicker />
-							<ActionIcon
-								variant={dark ? 'default' : 'outline'}
-								color={dark ? 'yellow' : 'blue'}
-								onClick={() => toggleColorScheme()}
-								title="Toggle color scheme"
-								size={'lg'}
-							>
-								{dark ? (
-									<IconSun size="1.1rem" color="#FCC419" />
-								) : (
-									<IconMoonStars size="1.1rem" />
-								)}
-							</ActionIcon>
+							<ThemeSwitcher/>
 						</Group>
 					}
 					hiddenFrom="md"
@@ -318,30 +182,9 @@ export default function Header() {
 				>
 					<ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
 						<Divider my="sm" mt="5px" />
-						<Autocomplete
-							placeholder="Search"
-							leftSection={
-								<IconSearch
-									style={{ width: rem(16), height: rem(16) }}
-									stroke={1.5}
-								/>
-							}
-							data={[
-								'React',
-								'Angular',
-								'Vue',
-								'Next.js',
-								'Riot.js',
-								'Svelte',
-								'Blitz.js',
-							]}
-							// visibleFrom="xxs"
-							radius="md"
-							mb="1em"
-							comboboxProps={{ zIndex: 9999999 }}
-							value={searchText}
-							onChange={setSearchText}
-						/>
+						<SearchBar value={searchText} setValue={setSearchText} />
+						
+						
 						<a href="#" className={classes.link}>
 							Home
 						</a>
