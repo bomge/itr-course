@@ -64,7 +64,7 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 				<div className={classes.cardSection}>
 					<Badge
 						color="orange"
-						variant={dark ? 'outline' : 'light'}
+						variant={'filled'}
 						style={{
 							position: 'absolute',
 							top: '10px',
@@ -103,7 +103,7 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 					<Anchor
 						size="14px"
 						className={classes['author-link']}
-						href={`/users/${authorId}`}
+						href={`/user/${authorId}`}
 						target="_blank"
 						underline="never"
 					>

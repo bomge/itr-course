@@ -5,7 +5,7 @@ import {
 	Image,
 	ActionIcon,
 	Text,
-	useMantineColorScheme,
+	// useMantineColorScheme,
 	Flex,
 	Anchor,
 } from '@mantine/core';
@@ -26,10 +26,10 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 	const { author, authorId, collectionId, collectionName, id, liked, title } =
 		item;
 	const [isLiked, setLiked]=useState(liked);
-	const { colorScheme } = useMantineColorScheme({
-		keepTransitions: true,
-	});
-	const dark = colorScheme === 'dark';
+	// const { colorScheme } = useMantineColorScheme({
+	// 	keepTransitions: true,
+	// });
+	// const dark = colorScheme === 'dark';
 
 	if (loading) return <ItemCardSkeleton />;
 
@@ -51,7 +51,7 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 					<div className={classes.cardSection}>
 						<Badge
 							color="pink"
-							variant={dark ? 'outline' : 'light'}
+							variant={'filled'}
 							style={{
 								position: 'absolute',
 								top: '10px',
@@ -119,22 +119,3 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 		</>
 	);
 }
-// function CollectionCarousel() {
-// 	const [loading, setLoading] = useState(true);
-// 	useEffect(() => {
-// 		setTimeout(() => {
-// 			setLoading(false); // Simulate a loading delay
-// 		}, 1500);
-// 	}, []);
-// 	return (
-// 		<ItemCard
-// 			title="Ancient Pottery"
-// 			author="Sara Smith"
-// 			collection="Historical Artifacts"
-// 			imageUrl="/placeholder-item.png"
-// 			loading={loading}
-// 			liked
-// 		/>
-// 	);
-// }
-// export default CollectionCarousel;
