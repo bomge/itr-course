@@ -84,9 +84,7 @@ export default function SearchBar({ value, setValue }) {
 
 		getAsyncData(query, abortController.current.signal)
 			.then((result) => {
-				console.log(result);
 				const grouped = groupBy(result,'type');
-				console.log(grouped);
 				setData(grouped);
 				setLoading(false);
 				setEmpty(result.length === 0);
@@ -108,7 +106,7 @@ export default function SearchBar({ value, setValue }) {
 	);
 	
 	const searchKeyHandle = (k: React.KeyboardEvent<HTMLInputElement>) => {
-		if (value && k.code === 'Enter') {
+		if (value && k.keyCode === 13) {
 			combobox.closeDropdown();
 			comboboxRef.current?.blur();
 			navigate({
