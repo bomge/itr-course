@@ -8,19 +8,27 @@
 		"lineWidth": 80,
 		"lineEnding": "lf",
 		"ignore": []
-	  },
+	},
 	"linter": {
 		"enabled": true,
 		"rules": {
-		"a11y":{
-			"useValidAnchor":"off"
-		}
+			"a11y": {
+				"useValidAnchor": "off"
+			},
+			"suspicious": {
+				"noDoubleEquals": "off"
+			},
+			"style":{
+				"noNonNullAssertion":"off"
+			},
+			"complexity":{
+				"useLiteralKeys":"off"
+			}
 		}
 	},
-	"javascript":{
-		"formatter":{
-			"quoteStyle":"single"
-			
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single"
 		}
 	}
 }

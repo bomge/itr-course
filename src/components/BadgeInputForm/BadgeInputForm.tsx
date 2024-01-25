@@ -1,15 +1,18 @@
+import useAxiosPrivate from '@/hooks/useAxiosPrivate';
 import {
-	TextInput,
 	Group,
 	Select,
 	Box,
 	Button,
 	DefaultMantineColor,
+	Autocomplete,
 } from '@mantine/core';
 import { IconPlus, IconTrashX } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import classes from './BadgeInputForm.module.css';
+import { useTranslation } from 'react-i18next';
 
-
-const defaultMantineColors: DefaultMantineColor[] = [
+export const defaultMantineColors: DefaultMantineColor[] = [
 	'dark',
 	'gray',
 	'red',
@@ -28,7 +31,7 @@ const defaultMantineColors: DefaultMantineColor[] = [
 
 interface Badge {
 	color: DefaultMantineColor;
-	text: string
+	text: string;
 }
 export type Badges = Badge[];
 
@@ -37,23 +40,13 @@ type CharacteristicsFormProps = {
 	setBadges: (fields: Badges) => void;
 };
 
-const FieldTypeInput = ({ fieldType, onChange, value }) => {
-	switch (fieldType) {
-	case 'string':
-		return (
-			<TextInput onChange={onChange} value={value} w='7em' placeholder="Tag Text" />
-		);
-	default:
-		return null;
-	}
-};
-const BadgeInputForm = ({
-	badges,
-	setBadges,
-}: CharacteristicsFormProps) => {
-	// const [fields, setFields] = useState<Fields>(initFields);
+const MAX_ITEM_TAGS = 5;
+const BadgeInputForm = ({ badges, setBadges }: CharacteristicsFormProps) => {
+	const axios = useAxiosPrivate();
+	const { t } = useTranslation();
+	const [loadedTags, setLoadedTags] = useState([]);
 	const addField = () => {
-		if (badges.length >= 15) return;
+		if (badges.length >= MAX_ITEM_TAGS) return;
 		setBadges([
 			...badges,
 			{
@@ -73,6 +66,14 @@ const BadgeInputForm = ({
 		setBadges(newFields);
 	};
 
+	useEffect(() => {
+		async function getUniqueTags() {
+			const { data } = await axios.get('/uniqueItemTags');
+			setLoadedTags(data.tags);
+		}
+		getUniqueTags();
+	}, [axios]);
+
 	return (
 		<div>
 			{badges.map((field, index) => (
@@ -82,7 +83,7 @@ const BadgeInputForm = ({
 					style={{
 						marginBottom: 10,
 					}}
-					justify='start'
+					justify="start"
 				>
 					<Select
 						allowDeselect={false}
@@ -95,19 +96,22 @@ const BadgeInputForm = ({
 						placeholder="Color"
 					/>
 
-					<FieldTypeInput
-						fieldType='string'
-						value={field.text}
+					<Autocomplete
 						onChange={(value) => {
-							updateField(index, 'text', value.target.value);
+							updateField(index, 'text', value);
 						}}
+						data={loadedTags}
+						value={field.text}
+						w="7em"
+						placeholder="Tag Text"
+						maxLength={10}
 					/>
 
 					<Button
 						onClick={() => deleteField(index)}
 						variant="subtle"
 						color="red"
-						p='4px 8px'
+						p="4px 8px"
 						style={{
 							minWidth: 'auto',
 						}}
@@ -123,9 +127,15 @@ const BadgeInputForm = ({
 					marginTop: 20,
 				}}
 			>
-				<Button leftSection={<IconPlus />} onClick={addField} mb="2em">
-					Add new tag
-				</Button>
+				{badges.length < MAX_ITEM_TAGS ? (
+					<Button leftSection={<IconPlus />} onClick={addField} mb="2em">
+						{t('itemPage.badges.addNew')}
+					</Button>
+				) : (
+					<span className={classes.maxBadgesInfo}>
+						{t('itemPage.badges.reachedMaxCount')}
+					</span>
+				)}
 			</Box>
 		</div>
 	);

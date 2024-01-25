@@ -1,4 +1,6 @@
 .item-description{
+	max-width: 20em;
+	
 	@media (max-width: $mantine-breakpoint-sm) {
 		/* margin-left: 19%; */
 	  }
@@ -42,4 +44,9 @@
 	@media (max-width: $mantine-breakpoint-sm) {
 		padding: 0;
 	  }
+}
+
+.imageSection {
+	background: light-dark(rgb(43 43 43 / 4%), #807d7d0f);
+	border: 1px solid #555;
 }

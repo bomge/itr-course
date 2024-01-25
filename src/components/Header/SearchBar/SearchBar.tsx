@@ -10,6 +10,7 @@ import {
 import { IconSearch } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { getTypeAndIdFromString, groupBy } from '@/utils/util';
+import { useTranslation } from 'react-i18next';
 
 type mockData = {
 	title: string;
@@ -70,6 +71,7 @@ export default function SearchBar({ value, setValue }) {
 	const combobox = useCombobox({
 		onDropdownClose: () => combobox.resetSelectedOption(),
 	});
+	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState<Record<string, mockData[]> | null>(null);
@@ -84,7 +86,7 @@ export default function SearchBar({ value, setValue }) {
 
 		getAsyncData(query, abortController.current.signal)
 			.then((result) => {
-				const grouped = groupBy(result,'type');
+				const grouped = groupBy(result, 'type');
 				setData(grouped);
 				setLoading(false);
 				setEmpty(result.length === 0);
@@ -93,18 +95,18 @@ export default function SearchBar({ value, setValue }) {
 			.catch(() => {});
 	};
 
-	
-	const options = data != null && Object.keys(data).map((key) => 
-		<Combobox.Group label={`${key}s`}>
-			{data[key].map(a=>
-				<Combobox.Option value={`${key}_${a.id}`} key={a.title}>
-					{a.title}
-				</Combobox.Option>
-			)}
-			
-	  </Combobox.Group>
-	);
-	
+	const options =
+		data != null &&
+		Object.keys(data).map((key) => (
+			<Combobox.Group label={`${key}s`}>
+				{data[key].map((a) => (
+					<Combobox.Option value={`${key}_${a.id}`} key={a.title}>
+						{a.title}
+					</Combobox.Option>
+				))}
+			</Combobox.Group>
+		));
+
 	const searchKeyHandle = (k: React.KeyboardEvent<HTMLInputElement>) => {
 		if (value && k.keyCode === 13) {
 			combobox.closeDropdown();
@@ -122,14 +124,14 @@ export default function SearchBar({ value, setValue }) {
 		optionProps: ComboboxOptionProps,
 	) => {
 		const parsedValue = getTypeAndIdFromString(value);
-		if(!parsedValue){
+		if (!parsedValue) {
 			return console.error('error parsing value type+id');
 		}
-		const {type, id} = parsedValue;
+		const { type, id } = parsedValue;
 		setValue(optionProps.children);
 		combobox.closeDropdown();
 		comboboxRef.current?.blur();
-		
+
 		navigate({
 			pathname: `/${type}/${id}`,
 		});
@@ -139,12 +141,14 @@ export default function SearchBar({ value, setValue }) {
 			onOptionSubmit={HandleOptionSubmit}
 			withinPortal={false}
 			store={combobox}
-			
+			styles={{
+				dropdown: {},
+			}}
 		>
 			<Combobox.Target>
 				<TextInput
 					ref={comboboxRef}
-					placeholder="Search"
+					placeholder={t('header.search.placeHolder')}
 					value={value}
 					onChange={(event) => {
 						setValue(event.currentTarget.value);
@@ -168,13 +172,16 @@ export default function SearchBar({ value, setValue }) {
 							stroke={1.5}
 						/>
 					}
+					radius="sm"
 				/>
 			</Combobox.Target>
 
 			<Combobox.Dropdown hidden={data === null}>
 				<Combobox.Options>
 					{options}
-					{empty && <Combobox.Empty>No results found</Combobox.Empty>}
+					{empty && (
+						<Combobox.Empty>{t('header.search.noResults')}</Combobox.Empty>
+					)}
 				</Combobox.Options>
 			</Combobox.Dropdown>
 		</Combobox>

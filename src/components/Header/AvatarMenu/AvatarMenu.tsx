@@ -2,31 +2,33 @@ import { Avatar, Menu, rem } from '@mantine/core';
 
 import classes from './AvatarMenu.module.css';
 import { IconLogout, IconPhotoStar } from '@tabler/icons-react';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import { UserState } from '../Header';
-import useSignOut from 'react-auth-kit/hooks/useSignOut';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/stores/authStore_zutands';
+import { useTranslation } from 'react-i18next';
 
-export default function AvatarMenu() {
-
-	const authUser = useAuthUser() as UserState;
-	const signOut = useSignOut();
+export default function AvatarMenu({ closeDrawer }) {
+	const { t } = useTranslation();
+	const { userinfo } = useAuthStore();
 	const navigate = useNavigate();
-	
+	const { logout } = useAuthStore();
+
 	return (
-		<Menu withArrow styles={{
-			dropdown:{
-				zIndex:9999999
-			}
-		}}>
+		<Menu
+			withArrow
+			styles={{
+				dropdown: {
+					zIndex: 9999999,
+				},
+			}}
+		>
 			<Menu.Target>
 				<Avatar color="gray" className={classes.avatar} />
 			</Menu.Target>
 			<Menu.Dropdown>
 				<Menu.Label>
-					{authUser?.name || 'No Name'}
+					{userinfo?.name || 'No Name'}
 					<br />
-					{authUser.email}
+					{userinfo?.email}
 				</Menu.Label>
 				<Menu.Item
 					leftSection={
@@ -36,16 +38,15 @@ export default function AvatarMenu() {
 						/>
 					}
 					component={Link}
-					to={`/user/${authUser.id}`}
-					
+					to={`/user/${userinfo?.id}`}
 				>
-					My collections
+					{t('header.avatarMenu.myCollection')}
 				</Menu.Item>
 				<Menu.Item
 					onClick={() => {
-						signOut();
-						// setUser(null);
-						navigate('/refresh');
+						logout();
+						closeDrawer();
+						navigate('/'); //temporarily (hope so)
 						navigate(-1);
 					}}
 					leftSection={
@@ -55,7 +56,7 @@ export default function AvatarMenu() {
 						/>
 					}
 				>
-					Logout
+					{t('header.avatarMenu.logOut')}
 				</Menu.Item>
 			</Menu.Dropdown>
 		</Menu>

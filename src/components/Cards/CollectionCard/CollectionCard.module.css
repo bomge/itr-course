@@ -30,3 +30,13 @@
 	flex-wrap: wrap;
 	align-items: center;
 }
+
+.description{
+	color: light-dark(#443a3a, #a0a0a0);
+}
+
+.imageSection {
+	background: light-dark(rgb(43 43 43 / 4%), #00000017);
+	border-bottom: 2px solid light-dark(rgb(43 43 43 / 4%), #434242);;
+
+}

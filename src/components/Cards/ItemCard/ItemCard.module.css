@@ -29,3 +29,18 @@
 	color: light-dark(#3B3B3B, #DEE2E6);
 }
 
+.tags{
+	margin-bottom: 6px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.collectionName{
+	width: fit-content;
+}
+
+.imageSection {
+	background: light-dark(rgb(43 43 43 / 4%), #00000017);
+	border-bottom: 2px solid light-dark(rgb(43 43 43 / 4%), #434242);;
+}

@@ -12,7 +12,6 @@ import {
 } from '@mantine/core';
 import { useDisclosure, useToggle } from '@mantine/hooks';
 
-
 import siteIcon from '../../assets/collector-logo.svg';
 
 import classes from './Header.module.css';
@@ -20,25 +19,26 @@ import { LanguagePicker } from './LanguagePicker/LanguagePicker';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthModal_tabs from '../AuthForm/authform_tabs';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
 import SearchBar from './SearchBar/SearchBar';
 import AvatarMenu from './AvatarMenu/AvatarMenu';
 import ThemeSwitcher from './ThemeSwitcher/ThemeSwitcher';
+import { useAuthStore } from '@/stores/authStore_zutands';
+import { useTranslation } from 'react-i18next';
 
 export type FormType = 'login' | 'register';
-export type UserState = {name: string, email: string, id:string}
+export type UserState = { name: string; email: string; id: string };
 
 export default function Header() {
+	const { t } = useTranslation();
 	const [searchText, setSearchText] = useState('');
-	const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer, open: openDrawer }] =
-		useDisclosure(false);
+	const [
+		drawerOpened,
+		{ toggle: toggleDrawer, close: closeDrawer, open: openDrawer },
+	] = useDisclosure(false);
 	const [opened, { open, close }] = useDisclosure(false);
 	const [type, toggle] = useToggle<FormType>(['login', 'register']);
 
-
-
-	const authUser = useAuthUser() as UserState | null;
-	const [user, setUser] = useState<UserState | null>(authUser);
+	const { userinfo } = useAuthStore();
 
 	function HandleLogBtn_modal() {
 		closeDrawer();
@@ -55,10 +55,8 @@ export default function Header() {
 		open();
 	}
 
-
 	return (
 		<div className={classes.mainHeader}>
-
 			<Modal
 				opened={opened}
 				onClose={close}
@@ -71,7 +69,7 @@ export default function Header() {
 				p="xl"
 				styles={{
 					root: {
-						padding:0
+						padding: 0,
 					},
 					header: {
 						position: 'absolute',
@@ -92,11 +90,9 @@ export default function Header() {
 			>
 				{/* <AuthModal type={type} toggle={toggle}/> */}
 
-
 				<AuthModal_tabs
 					activeTab={type}
 					toggle={toggle}
-					setUser={setUser}
 					closeModal={close}
 					openDrawer={openDrawer}
 				/>
@@ -106,27 +102,27 @@ export default function Header() {
 				<header className={classes.header}>
 					<Group justify="space-between" h="100%">
 						{/* <MantineLogo size={30} /> */}
-						<Link to="/" >
-							<Image src={siteIcon} alt="Logo" mt='0.2em'/>
+						<Link to="/">
+							<Image src={siteIcon} alt="Logo" mt="0.2em" />
 						</Link>
 
 						<Group h="100%" gap={0} visibleFrom="sm">
 							<Link to="/" className={classes.link}>
-								Home
+								{t('header.home')}
 							</Link>
 							<Link to="/" className={classes.link}>
-								Collections
+								{t('header.collections')}
 							</Link>
 						</Group>
 
 						<Group visibleFrom="xxs">
 							<SearchBar value={searchText} setValue={setSearchText} />
-							
+
 							<Group visibleFrom="md">
 								<LanguagePicker />
-								<ThemeSwitcher/>
-								{user ? (
-									<AvatarMenu/>
+								<ThemeSwitcher />
+								{userinfo ? (
+									<AvatarMenu closeDrawer={closeDrawer} />
 								) : (
 									<>
 										<Button
@@ -134,10 +130,10 @@ export default function Header() {
 											radius="md"
 											onClick={HandleLogBtn_modal}
 										>
-											Log in
+											{t('header.logIn')}
 										</Button>
 										<Button radius="md" onClick={HandleRegBtn_modal}>
-											Sign up
+											{t('header.signUp')}
 										</Button>
 									</>
 								)}
@@ -159,11 +155,9 @@ export default function Header() {
 					padding="md"
 					title={
 						<Group pb="0">
-							{user ? (
-								<AvatarMenu/>
-							) : (<></>)}
+							{userinfo ? <AvatarMenu closeDrawer={closeDrawer} /> : <></>}
 							<LanguagePicker />
-							<ThemeSwitcher/>
+							<ThemeSwitcher />
 						</Group>
 					}
 					hiddenFrom="md"
@@ -183,28 +177,29 @@ export default function Header() {
 					<ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
 						<Divider my="sm" mt="5px" />
 						<SearchBar value={searchText} setValue={setSearchText} />
-						
-						
+
 						<a href="#" className={classes.link}>
-							Home
+							{t('header.home')}
 						</a>
 
 						<a href="#" className={classes.link}>
-							Collections
+							{t('header.collections')}
 						</a>
 
 						<Divider my="sm" />
 
-						{!user ? 
-							
+						{!userinfo ? (
 							<Group justify="center" grow pb="xl" px="md">
 								<Button variant="default" onClick={HandleLogBtn_modal}>
-								Log in
+									{t('header.logIn')}
 								</Button>
-								<Button pr='10px' onClick={HandleRegBtn_modal}>Sign up</Button>
+								<Button pr="10px" onClick={HandleRegBtn_modal}>
+									{t('header.signUp')}
+								</Button>
 							</Group>
-							: <></>
-						}
+						) : (
+							<></>
+						)}
 					</ScrollArea>
 				</Drawer>
 			</Box>

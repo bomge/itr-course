@@ -1,0 +1,4 @@
+.comment-text{
+	color: light-dark(rgb(24 57 60), #7f8c8d);
+	word-break: break-word;
+}
