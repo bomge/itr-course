@@ -32,7 +32,8 @@
 	  "comments": "Komentarze",
 	  "create": "Utwórz",
 		"save": "Zapisz",
-		"edit": "Edytuj"
+		"edit": "Edytuj",
+		"loading":"Ładowanie..."
 	},
 	"alt": {
 	  "itemImg": "Obraz przedmiotu"

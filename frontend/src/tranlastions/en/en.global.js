@@ -34,6 +34,7 @@ export default {
 		create:"Create",
 		save:"Save",
 		edit:"Edit",
+		loading:"Loading...",
 	},
 	alt:{
 		itemImg:"Item image"

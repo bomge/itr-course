@@ -15,7 +15,7 @@ import {
 	Group,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import {  IconHeart } from '@tabler/icons-react';
+import { IconHeart } from '@tabler/icons-react';
 import placeholder_item from '../../assets/product-placeholder.png';
 // import placeholder_item2 from '../../assets/Без названия.jpg';
 import classes from './Item.page.module.css';
@@ -54,6 +54,7 @@ export default function ItemPage({ isCreate = false }) {
 	const axios = useAxiosPrivate();
 	const navigate = useNavigate();
 
+	const [isLoading,setIsLoading] = useState(true)
 	const [isLiked, setIsLiked] = useState(false);
 	const [showMore, setShowMore] = useState(false);
 	const [title, setTitle] = useState('Item Title');
@@ -98,6 +99,7 @@ export default function ItemPage({ isCreate = false }) {
 			if (ownerId === userinfo?.id) {
 				setCanEdit(true);
 			}
+			setIsLoading(false)
 		}
 		async function fetchItemData() {
 			// otrybite mne ryki
@@ -127,6 +129,7 @@ export default function ItemPage({ isCreate = false }) {
 			if (ownerId === userinfo?.id) {
 				setCanEdit(true);
 			}
+			setIsLoading(false)
 		}
 		if (isCreate) {
 			fetchCollectionData().catch((e) => {
@@ -173,7 +176,8 @@ export default function ItemPage({ isCreate = false }) {
 		return {
 			label: field.name,
 			value: field.value
-				? field.type == 'date'
+				? // biome-ignore lint/suspicious/noDoubleEquals: <explanation>
+				  field.type == 'date'
 					? new Date(field.value as Date).toLocaleDateString()
 					: field.value?.toString()
 				: null,
@@ -200,7 +204,12 @@ export default function ItemPage({ isCreate = false }) {
 
 	const [isUploading, setIsUploading] = useState(false);
 
+	if(isLoading){
+		return t('general.loading')
+	}
+
 	return (
+		
 		<Box>
 			<Stack maw="80vw" m="auto" gap="0" mt="4em">
 				<Text
@@ -242,9 +251,9 @@ export default function ItemPage({ isCreate = false }) {
 							maxWidth: '100%',
 						}}
 					>
-						<Stack maw="400" className={classes.imageSection}>
+						<Stack maw="400"  className={classes.imageSection}>
 							<div
-								style={{ width: '400', height: '400', position: 'relative' }}
+								style={{ width: '400px', height: '400px', position: 'relative' }}
 							>
 								<Image
 									src={image || placeholder_item}
@@ -252,6 +261,7 @@ export default function ItemPage({ isCreate = false }) {
 									alt="Item img"
 									style={{
 										width: '100%',
+										height:'100%'
 										// height: '400px',
 									}}
 								/>

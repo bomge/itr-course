@@ -66,6 +66,7 @@ function CollectionPage({ isCreate = false }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 
+	const [isLoading,setIsLoading] = useState(true)
 	const [canEdit, setCanEdit] = useState(isCreate);
 
 	const [expand, setExpand] = useState(false);
@@ -133,6 +134,8 @@ function CollectionPage({ isCreate = false }) {
 			if (ownerId === userinfo?.id) {
 				setCanEdit(true);
 			}
+
+			setIsLoading(false)
 		}
 		if (collectionID) {
 			//fetch collection data
@@ -221,6 +224,10 @@ function CollectionPage({ isCreate = false }) {
 	const [image, setImage] = useState('');
 
 	const [isUploading, setIsUploading] = useState(false);
+
+	if(isLoading){
+		t('general.loading')
+	}
 
 	return (
 		<>

@@ -8,7 +8,7 @@ import pl from '../tranlastions/pl/pl.global.json';
 i18n
 	.use(initReactI18next)
 	.init({
-		debug: true,
+		// debug: true,
 		lng: JSON.parse(localStorage.getItem('lang') || '""')?.label || 'EN',
 		resources: {
 			EN: {
