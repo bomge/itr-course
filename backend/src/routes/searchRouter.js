@@ -9,7 +9,9 @@ router.route('/homeData').get(searchController.homeData);
 
 router.route('/search/userCollections/:userId').get(searchController.userAllObjects)
 router.route('/uniqueItemTags').get(searchController.uniqueItemTags)
-router.route('/search').post(searchController.simpleSerachTagCategory)
+router.route('/search/filter').post(searchController.simpleSerachTagCategory)
+router.route('/search/minified').post(searchController.textSearchMified)
+router.route('/search/').post(searchController.textSearch)
 
 
 module.exports = router;
