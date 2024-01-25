@@ -38,17 +38,27 @@ export function groupBy<T extends Item>(
 	return groupedData;
 }
 
+//it worked work mockdata with id instead of _id
+// export function getTypeAndIdFromString(
+// 	str: string,
+// ): { type: string; id: string } | null {
+// 	const match = str.match(/^([a-zA-Z]+)_(\d+)$/);
+
+// 	if (match) {
+// 		const [, type, id] = match;
+// 		return { type, id };
+// 	}
+
+// 	return null; // Or throw an error if no match is expected
+// }
+
 export function getTypeAndIdFromString(
 	str: string,
-): { type: string; id: string } | null {
-	const match = str.match(/^([a-zA-Z]+)_(\d+)$/);
+): { type: string; _id: string } | null {
+	const splitted = str.split('_');
 
-	if (match) {
-		const [, type, id] = match;
-		return { type, id };
-	}
-
-	return null; // Or throw an error if no match is expected
+	const [type, _id] = splitted;
+	return { type, _id };
 }
 
 export function decodeJWT(token: string) {

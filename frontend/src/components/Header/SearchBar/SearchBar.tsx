@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	Combobox,
 	ComboboxOptionProps,
 	Loader,
+	ScrollArea,
 	TextInput,
 	rem,
 	useCombobox,
@@ -11,96 +12,56 @@ import { IconSearch } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { getTypeAndIdFromString, groupBy } from '@/utils/util';
 import { useTranslation } from 'react-i18next';
+import useAxiosPrivate from '@/hooks/useAxiosPrivate';
+import { useDebouncedValue } from '@mantine/hooks';
 
 type mockData = {
 	title: string;
 	type: 'collection' | 'item';
-	id: string;
+	_id: string;
 };
 
-const MOCKDATA2: mockData[] = [
-	{ id: '1', title: 'collection1', type: 'collection' },
-	{ id: '2', title: 'item1_1', type: 'item' },
-	{ id: '3', title: 'item1_2', type: 'item' },
-	{ id: '4', title: 'item1_3', type: 'item' },
-	{ id: '5', title: 'item1_4', type: 'item' },
-	{ id: '6', title: 'item1_5', type: 'item' },
-	{ id: '7', title: 'collection2', type: 'collection' },
-	{ id: '8', title: 'item2_1', type: 'item' },
-	{ id: '9', title: 'item2_2', type: 'item' },
-	{ id: '10', title: 'item2_3', type: 'item' },
-	{ id: '11', title: 'item2_4', type: 'item' },
-	{ id: '12', title: 'item2_5', type: 'item' },
-	{ id: '13', title: 'collection3', type: 'collection' },
-	{ id: '14', title: 'item3_1', type: 'item' },
-	{ id: '15', title: 'item3_2', type: 'item' },
-	{ id: '16', title: 'item3_3', type: 'item' },
-	{ id: '17', title: 'item3_4', type: 'item' },
-	{ id: '18', title: 'item3_5', type: 'item' },
-	{ id: '19', title: 'collection4', type: 'collection' },
-	{ id: '20', title: 'item4_1', type: 'item' },
-	{ id: '21', title: 'item4_2', type: 'item' },
-	{ id: '22', title: 'item4_3', type: 'item' },
-	{ id: '23', title: 'item4_4', type: 'item' },
-	{ id: '24', title: 'item4_5', type: 'item' },
-	{ id: '25', title: 'collection5', type: 'collection' },
-	{ id: '26', title: 'item5_1', type: 'item' },
-	{ id: '27', title: 'item5_2', type: 'item' },
-	{ id: '28', title: 'item5_3', type: 'item' },
-	{ id: '29', title: 'item5_4', type: 'item' },
-	{ id: '30', title: 'item5_5', type: 'item' },
-];
-
-function getAsyncData(searchQuery: string, signal: AbortSignal) {
-	return new Promise<mockData[]>((resolve, reject) => {
-		signal.addEventListener('abort', () => {
-			reject(new Error('Request aborted'));
-		});
-
-		setTimeout(() => {
-			resolve(
-				MOCKDATA2.filter((item) =>
-					item.title.toLowerCase().includes(searchQuery.toLowerCase()),
-				).slice(0, 5),
-			);
-		}, Math.random() * 1000);
-	});
-}
-
-export default function SearchBar({ value, setValue }) {
+export default function SearchBar() {
 	const combobox = useCombobox({
 		onDropdownClose: () => combobox.resetSelectedOption(),
 	});
 	const { t } = useTranslation();
+	const axiosPrivate = useAxiosPrivate();
 	const navigate = useNavigate();
+	const [value, setValue] = useState('');
+	const [debounced] = useDebouncedValue(value, 300);
+
 	const [loading, setLoading] = useState(false);
 	const [data, setData] = useState<Record<string, mockData[]> | null>(null);
 	const [empty, setEmpty] = useState(false);
 	const abortController = useRef<AbortController>();
 	const comboboxRef = useRef<HTMLInputElement>(null);
 
-	const fetchOptions = (query: string) => {
-		abortController.current?.abort();
-		abortController.current = new AbortController();
-		setLoading(true);
+	async function fetchSearch() {
+		try {
+			const { data } = await axiosPrivate.post('/search/minified', {
+				text: value,
+			});
+			setData(data);
+			const isEmpty = data.collections.length === 0 && data.items.length === 0;
+			setEmpty(isEmpty);
+			setLoading(false);
+		} catch (e) {
+			setLoading(false);
+		}
+	}
 
-		getAsyncData(query, abortController.current.signal)
-			.then((result) => {
-				const grouped = groupBy(result, 'type');
-				setData(grouped);
-				setLoading(false);
-				setEmpty(result.length === 0);
-				abortController.current = undefined;
-			})
-			.catch(() => {});
-	};
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		fetchSearch();
+	}, [debounced]);
 
 	const options =
 		data != null &&
 		Object.keys(data).map((key) => (
-			<Combobox.Group label={`${key}s`}>
+			<Combobox.Group label={key} key={key}>
 				{data[key].map((a) => (
-					<Combobox.Option value={`${key}_${a.id}`} key={a.title}>
+					<Combobox.Option value={`${key}_${a._id}`} key={a._id}>
 						{a.title}
 					</Combobox.Option>
 				))}
@@ -127,13 +88,16 @@ export default function SearchBar({ value, setValue }) {
 		if (!parsedValue) {
 			return console.error('error parsing value type+id');
 		}
-		const { type, id } = parsedValue;
-		setValue(optionProps.children);
+		const { type, _id } = parsedValue;
+		setValue(optionProps.children!.toString());
 		combobox.closeDropdown();
 		comboboxRef.current?.blur();
 
+		//remove last char cuz of collectionS
+		const fixedType = type.slice(0, type.length - 1);
+
 		navigate({
-			pathname: `/${type}/${id}`,
+			pathname: `/${fixedType}/${_id}`,
 		});
 	};
 	return (
@@ -152,16 +116,13 @@ export default function SearchBar({ value, setValue }) {
 					value={value}
 					onChange={(event) => {
 						setValue(event.currentTarget.value);
-						fetchOptions(event.currentTarget.value);
+						// fetchOptions(event.currentTarget.value);
 						combobox.resetSelectedOption();
 						combobox.openDropdown();
 					}}
 					onClick={() => combobox.openDropdown()}
 					onFocus={() => {
 						combobox.openDropdown();
-						if (data === null) {
-							fetchOptions(value);
-						}
 					}}
 					onBlur={() => combobox.closeDropdown()}
 					onKeyDown={searchKeyHandle}
@@ -177,12 +138,14 @@ export default function SearchBar({ value, setValue }) {
 			</Combobox.Target>
 
 			<Combobox.Dropdown hidden={data === null}>
-				<Combobox.Options>
-					{options}
-					{empty && (
-						<Combobox.Empty>{t('header.search.noResults')}</Combobox.Empty>
-					)}
-				</Combobox.Options>
+				<ScrollArea.Autosize type="scroll" mah={200}>
+					<Combobox.Options>
+						{options}
+						{empty && (
+							<Combobox.Empty>{t('header.search.noResults')}</Combobox.Empty>
+						)}
+					</Combobox.Options>
+				</ScrollArea.Autosize>
 			</Combobox.Dropdown>
 		</Combobox>
 	);
