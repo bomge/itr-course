@@ -40,7 +40,8 @@ type CharacteristicsFormProps = {
 	setBadges: (fields: Badges) => void;
 };
 
-const MAX_ITEM_TAGS = 5;
+const MAX_ITEM_TAGS = +import.meta.env.VITE_MAX_ITEM_TAGS;
+const MAX_TAG_LENGTH = +import.meta.env.VITE_MAX_TAG_LENGTH;
 const BadgeInputForm = ({ badges, setBadges }: CharacteristicsFormProps) => {
 	const axios = useAxiosPrivate();
 	const { t } = useTranslation();
@@ -104,7 +105,7 @@ const BadgeInputForm = ({ badges, setBadges }: CharacteristicsFormProps) => {
 						value={field.text}
 						w="7em"
 						placeholder="Tag Text"
-						maxLength={10}
+						maxLength={MAX_TAG_LENGTH}
 					/>
 
 					<Button

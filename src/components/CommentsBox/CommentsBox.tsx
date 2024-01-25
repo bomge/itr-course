@@ -20,7 +20,7 @@ import socketio from 'socket.io-client';
 import Cookies from 'js-cookie';
 import { useTranslation } from 'react-i18next';
 
-const socket = socketio('http://localhost:3500', {
+const socket = socketio(import.meta.env.VITE_API_BASEURL, {
 	transports: ['websocket'],
 	auth: {
 		token: Cookies?.get('access_token'),

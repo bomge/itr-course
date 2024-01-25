@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Bounce, toast } from 'react-toastify';
 
-const baseURL = 'http://localhost:3500';
+const baseURL = import.meta.env.VITE_API_BASEURL;
 
 const axiosPublic = axios.create({
   baseURL

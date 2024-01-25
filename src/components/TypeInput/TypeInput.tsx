@@ -1,3 +1,4 @@
+import axiosPublic from '@/api/axios';
 import { ActionIcon, Autocomplete } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 import { useState, useEffect, useRef } from 'react';
@@ -7,10 +8,14 @@ export default function CollectionTypeSelect({ type, setType }) {
 	const [types, setTypes] = useState([]);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const { t } = useTranslation();
+	
 	useEffect(() => {
-		fetch('http://localhost:3500/collections/types')
-			.then((res) => res.json())
-			.then((data) => setTypes(data.map((a) => a.type)));
+		axiosPublic.get('/collections/types')
+		.then(res => res.data) 
+		.then(data => {
+		  const types = data.map(type => type.type);
+		  setTypes(types);
+		});
 	}, []);
 
 	const HanldeclearValue = () => {

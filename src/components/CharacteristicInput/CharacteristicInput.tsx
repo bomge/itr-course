@@ -84,6 +84,8 @@ type CharacteristicsFormProps = {
 	charsctsType: 'setValues' | 'setInputTypes';
 };
 
+const MAX_FIELD_COUNT = +import.meta.env.VITE_MAX_CHRSTCS
+
 const CharacteristicsForm = ({
 	fields,
 	setFields,
@@ -92,7 +94,7 @@ const CharacteristicsForm = ({
 	const { t } = useTranslation();
 	// const [fields, setFields] = useState<Fields>(initFields);
 	const addField = () => {
-		if (fields.length >= 15) return;
+		if (fields.length >= MAX_FIELD_COUNT) return;
 		setFields([
 			...fields,
 			{
