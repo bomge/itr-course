@@ -5,25 +5,21 @@ import {
 	Badge,
 	Flex,
 	useMantineColorScheme,
-	Skeleton
+	Skeleton,
 } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
 import classes from './CollectionCard.module.css';
 
-
-
 export default function CollectionCardSkeleton() {
-
 	const { colorScheme } = useMantineColorScheme({
 		keepTransitions: true,
 	});
 	const dark = colorScheme === 'dark';
 
-	const tagDiv = [0,0,0].map((_, i) => (
+	const tagDiv = [0, 0, 0].map((_, i) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-		<Skeleton width="20%" radius='55px' height={13} key={i}/>
+		<Skeleton width="20%" radius="55px" height={13} key={i} />
 	));
-
 
 	return (
 		// <Link to={`/collection/${id}`}
@@ -35,8 +31,8 @@ export default function CollectionCardSkeleton() {
 			w="17em"
 			style={{ textDecoration: 'none' }}
 			withBorder
-			radius='lg'
-			className='hoverTransform pulse'
+			radius="lg"
+			className="hoverTransform pulse"
 		>
 			<CardSection>
 				<div className={classes.cardSection}>
@@ -72,15 +68,27 @@ export default function CollectionCardSkeleton() {
 				</div>
 			</CardSection>
 			<Flex direction="column" mb="5px" mt="12px">
-				<Skeleton width='80%' height={17} className={classes.title}/>
+				<Skeleton width="80%" height={17} className={classes.title} />
 
-				<Skeleton height={11} radius="xl" mt="1.5px" w='35%' style={{alignSelf:'end'}}>
-
-				</Skeleton>
+				<Skeleton
+					height={11}
+					radius="xl"
+					mt="1.5px"
+					w="35%"
+					style={{ alignSelf: 'end' }}
+				/>
 			</Flex>
-			<Flex className={classes.tags} mb='22px' mt='4px' direction='row' gap={10}>{tagDiv}</Flex>
-			<Skeleton height='10px' width='100%' mb='sm'/>
-			<Skeleton height='10px' width='100%' mb='6px'/>
+			<Flex
+				className={classes.tags}
+				mb="22px"
+				mt="4px"
+				direction="row"
+				gap={10}
+			>
+				{tagDiv}
+			</Flex>
+			<Skeleton height="10px" width="100%" mb="sm" />
+			<Skeleton height="10px" width="100%" mb="6px" />
 		</Card>
 		// </Link>
 	);

@@ -4,29 +4,27 @@ import {
 	Button,
 	Box,
 	Stack,
-	Badge,
 	useMantineColorScheme,
 	Group,
 	Flex,
-	ActionIcon,
 	Anchor,
 	Input,
-	Card,
 } from '@mantine/core';
 import {
-	IconColorPicker,
 	IconHeart,
 	IconMinus,
 	IconPlus,
 } from '@tabler/icons-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import ObjectId from 'bson-objectid';
 
-import placeholder_item from '../../assets/product-placeholder.png';
 import placeholder_collection from '../../assets/placeholder.png';
 import classes from './Collection.page.module.css';
-import { ITag } from '../Home/Home.page';
-import { Link } from 'react-router-dom';
-import { RichTextEditor } from '@mantine/tiptap';
+import {
+	Link,
+	useNavigate,
+	useParams,
+} from 'react-router-dom';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { Color } from '@tiptap/extension-color';
@@ -38,146 +36,192 @@ import CharacteristicsForm, {
 	Fields,
 } from '@/components/CharacteristicInput/CharacteristicInput';
 import AddCard_SearchPage from '@/components/Cards/AddCard_SearchPage/AddCard_SearchPage';
+import useAxiosPrivate from '@/hooks/useAxiosPrivate';
+import CollectionTypeSelect from '@/components/TypeInput/TypeInput';
+import { toast } from 'react-toastify';
+import ActionIconAuth from '@/components/ActionIconAuth/ActionIconAuth';
+import { deleteItemAPI, handleLike } from '@/api/api';
+import DeleteIcon from '@/components/DeleteBtn/DeleteBtn';
+import { useAuthStore } from '@/stores/authStore_zutands';
+import { axiosPrivate } from '@/api/axios';
+import ImageUpload from '@/components/ImageUpload/ImageUpload';
+import { useTranslation } from 'react-i18next';
+import TextRchEditor from '@/components/TextRchEditor/TextRchEditor';
 export type ItemCardCollectionPage = {
 	img: string;
 	title: string;
 	id: string;
+	_id?: string;
+	isLiked?: boolean;
 };
-
-const fakeTags: ITag[] = [
-	{
-		color: 'pink',
-		text: 'books',
-	},
-	{
-		color: 'gray',
-		text: 'old',
-	},
-	{
-		color: 'grape',
-		text: 'gem',
-	},
-];
-
-export const fakeItems_collectPage: ItemCardCollectionPage[] = [
-	{
-		img: placeholder_item,
-		title: 'Бибилия',
-		id: '1',
-	},
-	{
-		img: placeholder_item,
-		title: 'Тайна каменных пеликанов',
-		id: '2',
-	},
-	{
-		img: placeholder_item,
-		title:
-			'Английская поэзия в русских сказочках ааааааааааааааааааааааааааааааааааааааааааааааааааааааааа',
-		id: '3',
-	},
-	{
-		img: placeholder_item,
-		title: 'Старинные рецепты',
-		id: '4',
-	},
-	{
-		img: placeholder_item,
-		title: 'Лечение водкой и вином вином вином вином огнем и пламенем',
-		id: '5',
-	},
-];
-
-const initDescription =
-	'эту коллекцию я собирал тысячу лет. А вообще ее собирать начинал еще отец. А по правде, и его отец тоже бла-бла-бла-бла.. здесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цветздесь типа жирный А здесь курсив и другой цвет';
-const initTitle = 'Rarest books est 1980';
 
 const maxDescriptionLength = 145;
 
-const initFields: Fields = [
-	{
-		name: 'Name1',
-		type: 'string',
-		value: 'value1',
-	},
-	{
-		name: 'name2',
-		type: 'integer',
-		value: '123',
-	},
-];
+let changedEditro = false;
 
-function CollectionPage() {
+
+function CollectionPage({ isCreate = false }) {
+	const { collectionID } = useParams();
+	const axios = useAxiosPrivate({ noToastError: true });
+	const navigate = useNavigate();
+	const { t } = useTranslation();
+
+	const [canEdit, setCanEdit] = useState(isCreate);
+
 	const [expand, setExpand] = useState(false);
-	const [liked, setLiked] = useState(true);
+	const [isLiked, setIsLiked] = useState(true);
 
-	const [fields, setFields] = useState<Fields>(initFields);
+	const [owner, setOwner] = useState('');
+	const [ownerId, setOwnerId] = useState('');
+	const [description, setDescription] = useState(t('general.description'));
+	const [description_text, setDescription_text] = useState(
+		t('general.description'),
+	);
+	const [allowedFields, setAllowedFields] = useState<Fields>([]);
+	const [title, setTitle] = useState(t('general.title'));
+	const [items, setItems] = useState<ItemCardCollectionPage[]>([]);
+	const [type, setType] = useState('');
+	const [_id, set_Id] = useState(collectionID || new ObjectId().toString());
 
-	const author = 'Oleg Popov';
-	const authorId = '1';
+	const [imageUploaded, setImageUploaded] = useState(false);
 
-	const [description, setDescription] = useState(initDescription);
-	const [title, setTitle] = useState(initTitle);
-	const [isEdit, setIsEdit] = useState(false);
+	const [effect, setEffect] = useState(true);
+	const [isEdit, setIsEdit] = useState(isCreate);
 
 	const { colorScheme } = useMantineColorScheme({
 		keepTransitions: true,
 	});
 	const dark = colorScheme === 'dark';
-	const handleClick = () => {
+	const handleExpand = () => {
 		setExpand(!expand);
 	};
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	const { userinfo } = useAuthStore();
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies:
+	useEffect(() => {
+		async function fetchData() {
+			// otrybite mne ryki
+			const { data } = await axios.get(`/collections/${collectionID}`);
+			const {
+				description,
+				description_text,
+				title,
+				items,
+				allowedFields,
+				owner: { _id: ownerId, name },
+				type: { type },
+				isLiked,
+				_id,
+				img,
+			} = data;
+			setDescription(description);
+			setDescription_text(description_text);
+			setTitle(title);
+			setItems(items);
+			setAllowedFields(allowedFields);
+			setOwner(name);
+			setOwnerId(ownerId);
+			setType(type);
+			setIsLiked(isLiked);
+			set_Id(_id);
+			setImage(img);
+			// editor?.commands.setContent(description);
+			if (ownerId === userinfo?.id) {
+				setCanEdit(true);
+			}
+		}
+		if (collectionID) {
+			//fetch collection data
+
+			fetchData().catch((e) => {
+				console.error('fetch err');
+				navigate('/');
+			});
+		} else if (isCreate) {
+			//if creaction
+			setOwner(userinfo!.name);
+			setOwnerId(userinfo!.id);
+		}
+	}, [collectionID, axios, isCreate, navigate, effect]);
+
+	const handleSave = async () => {
+		const postData = {
+			description,
+			description_text,
+			allowedFields: allowedFields.filter((a) => a.type && a.name),
+			title,
+			type,
+			_id,
+			updImg: imageUploaded,
+		};
+		const { data } = await axios.post(
+			`/collections/${collectionID || 'new'}`,
+			postData,
+		);
+		setAllowedFields(data.allowedFields);
+
+		setEffect((p) => !p);
+		isCreate && navigate(`/collection/${data._id}`);
+
+		toast.success(
+			isCreate
+				? t('collectionPage.created_collection')
+				: t('collectionPage.updated_collection'),
+		);
+	};
+	const handleBtnSave = async () => {
+		if (isEdit) {
+			await handleSave();
+		}
+		setIsEdit((v) => !v);
+	};
 	const getDescriptionText = () => {
 		return expand ? description : description.slice(0, maxDescriptionLength);
 	};
 
-	const tagDiv = fakeTags.map((tag, i) => (
-		<Badge
-			color={tag.color}
-			size="sm"
-			variant={dark ? 'outline' : 'light'}
-			// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-			key={i}
-		>
-			{tag.text}
-		</Badge>
-	));
 	// truncate="end"
-
-	const itemsDiv = fakeItems_collectPage.map((item, i) => (
+	// items;
+	//fakeItems_collectPage
+	const itemsDiv = items.map((item, i) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 		<ItemCard_simple item={item} key={i} />
 	));
-	itemsDiv.unshift(
-		// <Anchor component={Link} m='auto' to={'/collection/1/addItem'} key={itemsDiv.length+1}>
-		// 	<Card
-		// 		style={{
-		// 			padding: 0,
-		// 			minWidth: 160,
-		// 			minHeight: '14.5em',
-		// 			textAlign: 'center',
-		// 			margin: '0 auto',
-		// 			justifyContent: 'center',
-		// 		}}
-		// 		withBorder
-		// 		radius="md"
-		// 		className="hoverTransform"
-		// 	>
-		// 		{' '}
-		// 		<IconPlus size="100px" style={{ margin: 'auto' }} />
-		// 	</Card>
-		// </Anchor>
-		<AddCard_SearchPage key={itemsDiv.length+1} page='collection'/>
-		
-	);
+	canEdit &&
+		itemsDiv.unshift(
+			<AddCard_SearchPage
+				key={itemsDiv.length + 1}
+				page="collection"
+				id={collectionID}
+			/>,
+		);
 	const editor = useEditor({
 		extensions: [StarterKit, TextStyle, Color, Underline, Highlight],
 		content: description,
-		onUpdate: () => setDescription(editor?.getHTML() || ''),
+		onUpdate: () => {
+			setDescription(editor?.getHTML() || '');
+			setDescription_text(editor?.getText() || '');
+		},
 	});
+	useEffect(() => {
+		if (!changedEditro && editor && description !== 'Description') {
+			editor?.commands?.setContent(description);
+			changedEditro = true;
+		}
+	}, [description, editor]);
+	const handleDelete = async () => {
+		await deleteItemAPI({ type: 'collections', id: collectionID as string });
+		toast.success(t('collectionPage.deleted_collection'));
+		navigate('/');
+	};
+
+	const [image, setImage] = useState('');
+
+	const [isUploading, setIsUploading] = useState(false);
+
 	return (
 		<>
 			<Box>
@@ -189,23 +233,74 @@ function CollectionPage() {
 							// marginBottom: 10,
 						}}
 					>
-						{'collections -> rarest books est 1980'}
+						{/* biome-ignore lint/style/useTemplate: <explanation> */}
+						{t('general.collection') + ' '}{' '}
+						{isCreate ? (
+							t('collectionPage.creatingNewCollection')
+						) : (
+							<Anchor
+								component={Link}
+								to={`/collection/${collectionID}`}
+								style={{ color: 'inherit', fontSize: '14px' }}
+							>
+								{title}
+							</Anchor>
+						)}
 					</Text>
 
-					<div style={{ position: 'relative', display:'flex', alignSelf:'center' }}>
-						<Button
-							pos="absolute"
-							right="0"
-							top='0.5em'
-							onClick={() => setIsEdit((v) => !v)}
-						>
-							{isEdit ? 'Save' : 'Edit'}{' '}
-						</Button>
+					<div
+						style={{
+							position: 'relative',
+							display: 'flex',
+							alignSelf: 'center',
+						}}
+					>
+						{canEdit && (
+							<>
+								<Button
+									pos="absolute"
+									right="0"
+									top="0.5em"
+									radius="9px 0px 0px 9px"
+									onClick={handleBtnSave}
+									disabled={isUploading}
+								>
+									{isEdit
+										? isCreate
+											? t('general.create')
+											: t('general.save')
+										: t('general.edit')}{' '}
+								</Button>
+								{!isCreate && <DeleteIcon handleDelete={handleDelete} />}
+							</>
+						)}
 
-						<Image radius="sm" src={placeholder_collection} m="auto" className={classes.imgMain} />
+						<Stack maw="360" className={classes.imageSection}>
+							<div style={{ width: '360', height: '240' }}>
+								<Image
+									radius="sm"
+									src={image || placeholder_collection}
+									m="auto"
+									className={classes.imgMain}
+									w="360"
+									h="240"
+									fit="contain"
+									maw="100%"
+								/>
+							</div>
+							{isEdit && (
+								<ImageUpload
+									collectableId={_id}
+									image={image}
+									isUploading={isUploading}
+									setImage={setImage}
+									setIsUploading={setIsUploading}
+									setImageUploaded={setImageUploaded}
+								/>
+							)}
+						</Stack>
 					</div>
 
-				
 					<Group m="auto">
 						{isEdit ? (
 							<Input
@@ -216,6 +311,7 @@ function CollectionPage() {
 									fontWeight: 700,
 									textAlign: 'center',
 								}}
+								placeholder={t('general.title')}
 								// w='2em'
 								mt="0.4em"
 								mb="0.0em"
@@ -233,136 +329,115 @@ function CollectionPage() {
 								{title}
 							</Text>
 						)}
-						<ActionIcon
+						<ActionIconAuth
 							className={classes['main-heart']}
 							variant="transparent"
 							m="auto"
-							style={
-								{
-									// position: 'absolute',
-									// bottom:'20px'
-								}
+							onClick={() =>
+								handleLike({
+									id: collectionID as string,
+									setIsLiked: setIsLiked,
+									type: 'collections',
+								})
 							}
-							onClick={() => setLiked((prev) => !prev)}
-							// color="gray"
 						>
 							<IconHeart
 								size={24}
 								color="red"
-								fill={liked ? 'red' : 'transparent'}
+								fill={isLiked ? 'red' : 'transparent'}
 							/>
-						</ActionIcon>
+						</ActionIconAuth>
 					</Group>
+
 					<Text
 						style={{
 							fontSize: 14,
-							marginBottom: 10,
 							textAlign: 'center',
 						}}
 						className={classes.author}
 					>
-						by{' '}
+						{t('general.author')}{' '}
 						<Anchor
 							component={Link}
 							size="14px"
 							className={classes['author-link']}
-							to={`/user/${authorId}`}
-							target="_blank"
+							to={`/user/${ownerId}`}
 							underline="never"
 						>
-							{author}
+							{owner}
 						</Anchor>
 					</Text>
-					{isEdit && (<>
-						<div style={{ textAlign: 'center', width: '100%' }}>
-						Characteristics
-						</div>
-						<CharacteristicsForm fields={fields} setFields={setFields} charsctsType='setInputTypes'/>
-					</>
+					{!isEdit && (
+						<Text
+							style={{
+								fontSize: 14,
+								marginBottom: 10,
+								textAlign: 'center',
+							}}
+							className={classes.author}
+						>
+							{t('general.category')}:{' '}
+							<Anchor
+								component={Link}
+								size="14px"
+								className={classes['author-link']}
+								to={`/search?text=${type}`}
+								underline="never"
+							>
+								{type}
+							</Anchor>
+						</Text>
 					)}
-					<Group className={classes.tags}>{tagDiv}</Group>
+					{isEdit && (
+						<>
+							<CollectionTypeSelect type={type} setType={setType} />
+							<div style={{ textAlign: 'center', width: '100%' }}>
+								{t('general.characteristics')}
+							</div>
+							<CharacteristicsForm
+								fields={allowedFields}
+								setFields={setAllowedFields}
+								charsctsType="setInputTypes"
+							/>
+						</>
+					)}
 
 					{isEdit ? (
-						<RichTextEditor editor={editor} mt="1em" mb="-0.5m">
-							<RichTextEditor.Toolbar sticky stickyOffset={60}>
-								<RichTextEditor.ColorPicker
-									colors={[
-										'#25262b',
-										'#868e96',
-										'#fa5252',
-										'#e64980',
-										'#be4bdb',
-										'#7950f2',
-										'#4c6ef5',
-										'#228be6',
-										'#15aabf',
-										'#12b886',
-										'#40c057',
-										'#82c91e',
-										'#fab005',
-										'#fd7e14',
-									]}
-								/>
-
-								<RichTextEditor.ControlsGroup>
-									<RichTextEditor.Control interactive={false}>
-										<IconColorPicker size="1rem" stroke={1.5} />
-									</RichTextEditor.Control>
-									<RichTextEditor.Color color="#F03E3E" />
-									<RichTextEditor.Color color="#7048E8" />
-									<RichTextEditor.Color color="#1098AD" />
-									<RichTextEditor.Color color="#37B24D" />
-									<RichTextEditor.Color color="#F59F00" />
-								</RichTextEditor.ControlsGroup>
-
-								<RichTextEditor.UnsetColor />
-
-								<RichTextEditor.ControlsGroup>
-									<RichTextEditor.Bold />
-									<RichTextEditor.Italic />
-									<RichTextEditor.Underline />
-									<RichTextEditor.Strikethrough />
-									<RichTextEditor.Highlight />
-									<RichTextEditor.Code />
-								</RichTextEditor.ControlsGroup>
-								<RichTextEditor.ClearFormatting />
-
-							</RichTextEditor.Toolbar>
-
-							<RichTextEditor.Content />
-						</RichTextEditor>
-					) : <Text
-						style={{
-							fontSize: 14,
-							textAlign: 'center',
-						}}
-						mt="1em"
-						mb="20px"
-						span
-					// dangerouslySetInnerHTML={{ __html: htmlString }}
-					// dangerouslySetInnerHTML={getDescriptionText()}
-					>
-						{/* {getDescriptionText()} */}
-						{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
-						<div dangerouslySetInnerHTML={{ __html: getDescriptionText() }} />
-						<br />
-						<Button
-							onClick={handleClick}
-							className={classes['descr-btn']}
-							color="none"
+						<TextRchEditor editor={editor}/>
+					) : (
+						<Text
+							style={{
+								fontSize: 14,
+								textAlign: 'center',
+								wordWrap: 'break-word',
+							}}
+							mt="1em"
+							mb="20px"
+							span
 						>
-							{expand ? (
-								<>
-									<IconMinus size={16} /> Collapse
-								</>
-							) : (
-								<>
-									<IconPlus size={16} /> Expand
-								</>
+							{/* biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation> */}
+							<div dangerouslySetInnerHTML={{ __html: getDescriptionText() }} />
+							<br />
+							{description.length > maxDescriptionLength && (
+								<Button
+									onClick={handleExpand}
+									className={classes['descr-btn']}
+									color="none"
+								>
+									{expand ? (
+										<>
+											<IconMinus size={16} /> {t('general.collapse')}
+										</>
+									) : (
+										<>
+											<IconPlus size={16} /> {t('general.expand')}
+										</>
+									)}
+								</Button>
 							)}
-						</Button>
-					</Text>}
-					
+						</Text>
+					)}
+
 					<Text
 						style={{
 							fontSize: 24,
@@ -371,7 +446,7 @@ function CollectionPage() {
 							textAlign: 'center',
 						}}
 					>
-						Items
+						{t('general.items')}
 					</Text>
 					<Flex
 						style={{
@@ -379,24 +454,39 @@ function CollectionPage() {
 						}}
 						wrap="wrap"
 						gap="5em"
+						justify="center"
 					>
 						{itemsDiv}
 					</Flex>
-					<Button
-						style={{
-							// width: '100%',
-							width: 'fit-content',
-							padding: '5px 10px',
-							marginBottom: '20px',
-							marginLeft: 'auto',
-							marginRight: 'auto',
-						}}
-						variant={dark ? 'outline' : 'light'}
-						color="gray"
-						radius="md"
-					>
-						Show More
-					</Button>
+					{items.length > 5 && (
+						<Button
+							style={{
+								// width: '100%',
+								width: 'fit-content',
+								padding: '5px 10px',
+								marginBottom: '20px',
+								marginLeft: 'auto',
+								marginRight: 'auto',
+							}}
+							variant={dark ? 'outline' : 'light'}
+							color="gray"
+							radius="md"
+						>
+							{t('general.showMore')}
+						</Button>
+					)}
+					{items.length === 0 && (
+						<Text
+							style={{
+								fontSize: 17,
+								fontWeight: 300,
+								textAlign: 'center',
+								marginBottom: '2em',
+							}}
+						>
+							{t('collectionPage.noItems')}
+						</Text>
+					)}
 				</Stack>
 			</Box>
 		</>

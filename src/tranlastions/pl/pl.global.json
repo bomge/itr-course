@@ -1,0 +1,119 @@
+{
+	"homePage": {
+	  "hero": {
+		"explore": "ODKRYWAJ",
+		"unique": "UNIKALNE", 
+		"rarest": "NAJRZADSZE",
+		"collections": "KOLEKCJE"
+	  },
+	  "carousel": {
+		"largestCollections": "Największe Kolekcje",
+		"newestItems": "Ostatnio dodane przedmioty"
+	  }
+	},
+	"general": {
+	  "collection": "Kolekcja",
+	  "item": "Przedmiot",
+	  "author": "autor",
+	  "category": "Kategoria",
+	  "nMoreItems": "więcej",
+	  "cancel": "Anuluj",
+	  "delete": "Usuń",
+	  "value": "wartość",
+	  "description": "Opis",
+	  "title": "Tytuł", 
+	  "characteristics": "Cechy",
+	  "collapse": "Zwiń",
+	  "expand": "Rozwiń",
+	  "items": "Przedmioty",
+	  "showMore": "Pokaż więcej",
+	  "showLess": "Pokaż mniej",
+	  "tags": "Tagi",
+	  "comments": "Komentarze",
+	  "create": "Utwórz",
+		"save": "Zapisz",
+		"edit": "Edytuj"
+	},
+	"alt": {
+	  "itemImg": "Obraz przedmiotu"
+	},
+	"header": {
+	  "home": "Strona główna",
+	  "collections": "Kolekcje",
+	  "logIn": "Zaloguj się",
+	  "signUp": "Zarejestruj się",
+	  "avatarMenu": {
+		"myCollection": "Moje kolekcje",
+		"logOut": "Wyloguj"  
+	  },
+	  "search": {
+		"placeHolder": "Szukaj",
+		"noResults": "Nie znaleziono wyników"
+	  }
+	},
+	"fileInput": {
+	  "noFileSelected": "Nie wybrano pliku",
+	  "successUpload": "Obraz pomyślnie przesłany",
+	  "upload": "Prześlij",
+	  "errorType": "Plik musi być w formacie OBRAZU"
+	},
+	"collectionPage": {
+	  "typeInput": {
+		"label": "Wybierz typ kolekcji",
+		"placeHolder": "Wybierz"
+	  },
+	  "created_collection": "Pomyślnie utworzono kolekcję",
+	  "updated_collection": "Pomyślnie zaktualizowano kolekcję",
+	  "deleted_collection": "Pomyślnie usunięto kolekcję",
+	  "creatingNewCollection": "Tworzenie nowej kolekcji",
+	  "noItems": "Kolekcja nie zawiera przedmiotów"
+	},
+	"deleteModal": {
+	  "confirmDelTile": "Potwierdź usunięcie",
+	  "modalText": "Czy na pewno chcesz usunąć ten przedmiot? Tej czynności nie można cofnąć."
+	},
+	"itemPage": {  
+	  "comment": {
+		"zeroComments": "Nie ma jeszcze żadnych komentarzy",
+		"yourCommentPlaceHolder": "Twój komentarz",  
+		"mustBeLogged": "Musisz być zalogowany, aby skomentować"
+	  },
+	  "badges": {
+		"addNew": "Dodaj nowy tag",
+		"reachedMaxCount": "Osiągnięto maksymalną liczbę znaczników" 
+	  },
+	  "updated": "Pomyślnie zaktualizowano przedmiot",
+	  "deleted": "Pomyślnie usunięto przedmiot",
+	  "creating": "Tworzenie nowego przedmiotu",
+	  "itemTitle": "Tytuł przedmiotu", 
+	  "noChrcts1": "Brak dostępnych cech.",
+	  "noChrcts2": "Dodaj cechy na stronie kolekcji"
+	},
+	"characteristicInput": {
+	  "addNew": "Dodaj nową cechę"
+	},
+	"authForm": {
+	  "passLowLengthErr": "Hasło powinno zawierać co najmniej {{length}} znaków",
+	  "invalidEmail": "Niepoprawny email",
+	  "login": "Zaloguj",  
+	  "register": "Zarejestruj",
+	  "loginGreet": "Witaj ponownie, Zaloguj się",
+	  "urPassPlaceholder": "Twoje hasło",
+	  "dontHaveAcc": "Nie masz konta? Zarejestruj się",
+	  "registerGreet": "Nowy użytkownik? Zarejestruj się", 
+	  "urNamePlaceholder": "Twoje imię",
+	  "haveAnAcc": "Masz już konto? Zaloguj się"
+	},
+	"seacrhPage": {
+	  "collection_by_author": "Kolekcja użytkownika {{authorName}}",
+	  "search_text": "Szukaj za" 
+	},
+	"api": {
+	  "errors": {
+		"idk": "Coś poszło nie tak",
+		"onlyForAuthed": "Tylko zalogowani użytkownicy mogą to zrobić",
+		"notFound": "Nie znaleziono",
+		"403": "Nie masz dostępu"
+	  }
+	}
+  }

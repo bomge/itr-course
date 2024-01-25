@@ -1,13 +1,13 @@
-import {Flex} from '@mantine/core';
+import { Flex } from '@mantine/core';
 import classes from './Footer.module.css';
 import { IconHeart } from '@tabler/icons-react';
 
 export function Footer() {
 	return (
 		<div className={classes.footer}>
-			<Flex justify='center' mt='1em'>
+			<Flex justify="center" mt="1em">
 				{/* <span> */}
-					MADE WITH  <Heart />  BY B1Emg
+				MADE WITH <Heart /> BY B1Emg
 				{/* </span> */}
 			</Flex>
 		</div>
@@ -15,8 +15,6 @@ export function Footer() {
 }
 
 function Heart() {
-
-	return <IconHeart fill="#f53d3d"
-		stroke="youtube"/>;
-	// return <span>♥</span>; 
+	return <IconHeart fill="#f53d3d" stroke="youtube" />;
+	// return <span>♥</span>;
 }

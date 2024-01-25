@@ -4,6 +4,7 @@ import { IconChevronDown } from '@tabler/icons-react';
 import images from './images';
 import classes from './LanguagePicker.module.css';
 import { useLocalStorage } from '@mantine/hooks';
+import { useTranslation } from 'react-i18next';
 
 const data = [
 	{ label: 'EN', image: images.english },
@@ -16,11 +17,15 @@ export function LanguagePicker() {
 		key: 'lang',
 		defaultValue: data[0],
 	});
+	const { i18n } = useTranslation();
 
 	const items = data.map((item) => (
 		<Menu.Item
 			leftSection={<Image src={item.image} width={18} height={18} />}
-			onClick={() => setSelected(item)}
+			onClick={() => {
+				setSelected(item);
+				i18n.changeLanguage(item.label);
+			}}
 			key={item.label}
 		>
 			{item.label}
@@ -31,7 +36,7 @@ export function LanguagePicker() {
 		<Menu
 			onOpen={() => setOpened(true)}
 			onClose={() => setOpened(false)}
-			radius="md"
+			// radius="100px"
 			width="target"
 			withinPortal
 			zIndex={9999999}
@@ -41,6 +46,7 @@ export function LanguagePicker() {
 					size="100px"
 					className={classes.control}
 					data-expanded={opened || undefined}
+					style={{ borderRadius: '6px' }}
 				>
 					<Group gap="xs">
 						<Image src={selected.image} width={22} height={22} />

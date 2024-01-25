@@ -1,10 +1,4 @@
-import {
-	Card,
-	CardSection,
-	Badge,
-	Skeleton,
-	ActionIcon,
-} from '@mantine/core';
+import { Card, CardSection, Badge, Skeleton, ActionIcon } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
 import classes from './ItemCard.module.css';
 
@@ -19,8 +13,8 @@ export default function ItemCardSkeleton() {
 				style={{ textDecoration: 'none' }}
 				withBorder
 				// m="auto"
-				radius='lg'
-				className='hoverTransform pulse'
+				radius="lg"
+				className="hoverTransform pulse"
 			>
 				<CardSection>
 					<div className={classes.cardSection}>
@@ -58,7 +52,7 @@ export default function ItemCardSkeleton() {
 
 				<Skeleton width="60%" height={10} mb={5} mt={15} />
 				<Skeleton width="30%" height={10} mb={22} />
-				<Skeleton width="80%" height={10} mb={5}/>
+				<Skeleton width="80%" height={10} mb={5} />
 			</Card>
 		</>
 	);

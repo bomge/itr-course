@@ -8,6 +8,8 @@ import {
 	// useMantineColorScheme,
 	Flex,
 	Anchor,
+	useMantineColorScheme,
+	Group,
 } from '@mantine/core';
 import { IconHeart } from '@tabler/icons-react';
 import classes from './ItemCard.module.css';
@@ -16,21 +18,55 @@ import ItemCardSkeleton from './ItemCardSkeleton';
 import { IItemCard } from '@/pages/Home/Home.page';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import ActionIconAuth from '@/components/ActionIconAuth/ActionIconAuth';
+import { handleLike } from '@/api/api';
+import { useTranslation } from 'react-i18next';
 
 interface ItemCardProps {
 	item: IItemCard;
-	loading: boolean;
+	loading?: boolean;
 }
 
 export default function ItemCard({ item, loading }: ItemCardProps) {
-	const { author, authorId, collectionId, collectionName, id, liked, title } =
-		item;
-	const [isLiked, setLiked]=useState(liked);
-	// const { colorScheme } = useMantineColorScheme({
-	// 	keepTransitions: true,
-	// });
-	// const dark = colorScheme === 'dark';
+	const {
+		owner,
+		collectionId: collection,
+		_id,
+		isLiked: liked,
+		title,
+		tags,
+		img,
+	} = item;
+	const [isLiked, setIsLiked] = useState(liked);
+	const { t } = useTranslation();
+	const { colorScheme } = useMantineColorScheme({
+		keepTransitions: true,
+	});
+	const dark = colorScheme === 'dark';
 
+	const tagsToShow = tags.length <= 3 ? tags : tags.slice(0, 2);
+	const additionalTags = Math.max(tags.length - 3, 0);
+
+	const tagDiv = (
+		<>
+			{tagsToShow.map((tag, i) => (
+				<Link to={`/search?tag=${tag.text}`} key={tag.color + tag.text + i}>
+					<Badge
+						color={tag.color}
+						size="sm"
+						variant={dark ? 'outline' : 'light'}
+					>
+						{tag.text}
+					</Badge>
+				</Link>
+			))}
+			{additionalTags > 0 && (
+				<Badge color="gray" size="sm" variant={dark ? 'filled' : 'outline'}>
+					+{additionalTags} {t('general.nMoreItems')}
+				</Badge>
+			)}
+		</>
+	);
 	if (loading) return <ItemCardSkeleton />;
 
 	return (
@@ -42,10 +78,10 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 				w="17em"
 				style={{ textDecoration: 'none' }}
 				withBorder
-				radius='lg'
-				className='hoverTransform card'
+				radius="lg"
+				className="hoverTransform card"
 				// m="auto"
-				mih='16.5em'
+				mih="16.5em"
 			>
 				<CardSection>
 					<div className={classes.cardSection}>
@@ -59,60 +95,78 @@ export default function ItemCard({ item, loading }: ItemCardProps) {
 								zIndex: 1,
 							}}
 						>
-							Item
+							{t('general.item')}
 						</Badge>
 
-						
-						<Link to={`/item/${id}`}><Image src={placeHolder} height={160} alt="Rare books" /></Link> 
+						<Link to={`/item/${_id}`}>
+							<Image
+								src={img || placeHolder}
+								fit="contain"
+								height={160}
+								alt={t('alt.itemImg')}
+								className={classes.imageSection}
+							/>
+						</Link>
 
-						<ActionIcon
+						<ActionIconAuth
 							className={classes['cardSection-icon']}
 							variant="transparent"
 							// color="gray"
-							onClick={()=>setLiked(prev=>!prev)}
+							onClick={() =>
+								handleLike({
+									id: _id as string,
+									setIsLiked: setIsLiked,
+									type: 'items',
+								})
+							}
 						>
 							<IconHeart
 								size={24}
 								color="red"
 								fill={isLiked ? 'red' : 'transparent'}
 							/>
-						</ActionIcon>
+						</ActionIconAuth>
 					</div>
 				</CardSection>
 				<Flex direction="column" mb="5px" mt="10px">
-					<Anchor style={{ color: 'inherit' }} component={Link} to={`/item/${id}`}>
+					<Anchor
+						style={{ color: 'inherit' }}
+						component={Link}
+						to={`/item/${_id}`}
+					>
 						<Text truncate="end" className={classes.title}>
 							{title} <br />
 						</Text>
 					</Anchor>
 					<Text truncate="end" className={classes.author} mt="-8px">
-						by&nbsp;
+						{t('general.author')}&nbsp;
 						{/* <a href={authorId} >{author}</a> */}
 						<Anchor
 							size="14px"
 							className={classes.author}
 							component={Link}
-							to={`/user/${authorId}`}
-							target="_blank"
+							to={`/user/${owner?._id}`}
 							underline="never"
 						>
-							{author}
+							{owner.name}
 						</Anchor>
 					</Text>
 				</Flex>
-				<Text mb='-7px' color='#808080'>Collection:</Text>
-				<Anchor component={Link} to={`/collection/${collectionId}`} underline="never" inherit>
-					<Text
-						size="sm"
-						// style={{
-						// 	color: 'gray',
-						// 	textDecoration: 'none',
-						// }}
-						className={classes.description}
-					// color='red'
-					>
-						{/* {truncatedDescr} */}
-						{collectionName}
+
+				<Group className={classes.tags}>{tagDiv}</Group>
+
+				<Text mb="-7px" color="#808080">
+					{t('general.collection')}:
+				</Text>
+				<Anchor
+					component={Link}
+					to={`/collection/${collection._id}`}
+					underline="never"
+					inherit
+					className={classes.collectionName}
+				>
+					<Text size="sm" className={classes.description}>
+						{collection.title}
 					</Text>
 				</Anchor>
 			</Card>

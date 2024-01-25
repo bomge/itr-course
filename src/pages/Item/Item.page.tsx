@@ -2,7 +2,6 @@ import {
 	Text,
 	Paper,
 	Image,
-	ActionIcon,
 	Title,
 	Badge,
 	Stack,
@@ -10,56 +9,34 @@ import {
 	TextInput,
 	Divider,
 	Box,
-	Avatar,
 	Table,
 	Anchor,
 	useMantineColorScheme,
 	Group,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
-import { IconBrandTelegram, IconHeart } from '@tabler/icons-react';
+import {  IconHeart } from '@tabler/icons-react';
 import placeholder_item from '../../assets/product-placeholder.png';
 // import placeholder_item2 from '../../assets/Без названия.jpg';
 import classes from './Item.page.module.css';
-import useAuthUser from 'react-auth-kit/hooks/useAuthUser';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import CharacteristicsForm, {
 	Fields,
 } from '@/components/CharacteristicInput/CharacteristicInput';
 import BadgeInputForm, {
 	Badges,
 } from '@/components/BadgeInputForm/BadgeInputForm';
+import ActionIconAuth from '@/components/ActionIconAuth/ActionIconAuth';
+import { deleteItemAPI, handleLike } from '@/api/api';
+import useAxiosPrivate from '@/hooks/useAxiosPrivate';
+import { toast } from 'react-toastify';
+import CommentsBox from '@/components/CommentsBox/CommentsBox';
+import DeleteIcon from '@/components/DeleteBtn/DeleteBtn';
+import { useAuthStore } from '@/stores/authStore_zutands';
+import ImageUpload from '@/components/ImageUpload/ImageUpload';
+import ObjectId from 'bson-objectid';
+import { useTranslation } from 'react-i18next';
 
-const author = 'Oleg Petrov';
-const authorId = '1';
-
-const initFields: Fields = [
-	{
-		name: 'string',
-		type: 'string',
-		value: 'value1',
-	},
-	{
-		name: 'integer',
-		type: 'integer',
-		value: '123',
-	},
-	{
-		name: 'multi-line',
-		type: 'multi-line',
-		value: '1\n2',
-	},
-	{
-		name: 'logical',
-		type: 'logical',
-		value: true,
-	},
-	{
-		name: 'date',
-		type: 'date',
-		value: new Date(),
-	}
-];
 const initBadges: Badges = [
 	{
 		color: 'yellow',
@@ -71,46 +48,158 @@ const initBadges: Badges = [
 	},
 ];
 
-export default function ItemPage() {
-	const [liked, setLiked] = useState(true);
+export default function ItemPage({ isCreate = false }) {
+	const { t } = useTranslation();
+	const { itemID, collectionID } = useParams();
+	const axios = useAxiosPrivate();
+	const navigate = useNavigate();
+
+	const [isLiked, setIsLiked] = useState(false);
 	const [showMore, setShowMore] = useState(false);
-	const [title, setTitle] = useState('библия');
+	const [title, setTitle] = useState('Item Title');
+	const [coltitle, setcolTitle] = useState('colTitle');
+	const [colId, setcolId] = useState(collectionID);
+	const [_id, set_Id] = useState(itemID || new ObjectId().toString());
 
-	const [fields, setFields] = useState<Fields>(initFields);
+	const [owner, setOwner] = useState('');
+	const [ownerId, setOwnerId] = useState('');
+
+	const [allowedFields, setAllowedFields] = useState<Fields>([]);
 	const [badges, setBadges] = useState<Badges>(initBadges);
-	const [isEdit, setIsEdit] = useState(false);
 
-	const authUser = useAuthUser();
+	const [isEdit, setIsEdit] = useState(isCreate);
+	const [canEdit, setCanEdit] = useState(isCreate);
+	const [triggerRefresh, setTriggerRefresh] = useState(0);
+
+	const [imageUploaded, setImageUploaded] = useState(false);
+
+	const { userinfo } = useAuthStore();
 
 	const { colorScheme } = useMantineColorScheme({
 		keepTransitions: true,
 	});
 	const dark = colorScheme === 'dark';
 
-	const characteristics = fields.map((field) => {
-		
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		async function fetchCollectionData() {
+			// otrybite mne ryki
+			const { data } = await axios.get(`/collections/mini/${collectionID}`);
+			const {
+				allowedFields,
+				owner: { _id: ownerId, name },
+				title,
+			} = data;
+			setAllowedFields(allowedFields);
+			setOwner(name);
+			setOwnerId(ownerId);
+			setcolTitle(title);
+			// editor?.commands.setContent(description);
+			if (ownerId === userinfo?.id) {
+				setCanEdit(true);
+			}
+		}
+		async function fetchItemData() {
+			// otrybite mne ryki
+			const { data } = await axios.get(`/items/${itemID}`);
+			const {
+				fields,
+				owner: { _id: ownerId, name },
+				title,
+				collectionTitle,
+				tags,
+				collectionId,
+				isLiked,
+				_id,
+				img,
+			} = data;
+			setAllowedFields(fields);
+			setOwner(name);
+			setOwnerId(ownerId);
+			setcolTitle(collectionTitle);
+			setcolId(collectionId);
+			setTitle(title);
+			setBadges(tags);
+			setIsLiked(isLiked);
+			set_Id(_id);
+			setImage(img);
+
+			if (ownerId === userinfo?.id) {
+				setCanEdit(true);
+			}
+		}
+		if (isCreate) {
+			fetchCollectionData().catch((e) => {
+				navigate('/');
+			});
+			if (!userinfo) return;
+			setOwner(userinfo?.name);
+			setOwnerId(userinfo?.id);
+		} else {
+			fetchItemData().catch((e) => {
+				navigate('/');
+			});
+		}
+	}, [itemID, userinfo, axios, navigate, triggerRefresh]);
+
+	const handleSave = async () => {
+		const postData = {
+			fields: allowedFields.map((a) => {
+				return { value: a.value || null, _id: a._id };
+			}), //: allowedFields.filter((a) => a.value),
+			title,
+			tags: badges.filter((a) => a.text),
+			_id,
+			updImg: imageUploaded,
+		};
+		const { data } = await axios.post(
+			`/items/${itemID || `collections/${collectionID}/new`}`,
+			postData,
+		);
+		isCreate && navigate(`/item/${data._id}`);
+
+		setTriggerRefresh(Math.random());
+
+		toast.success(t('itemPage.updated'));
+	};
+
+	const handleBtnSave = async () => {
+		if (isEdit) {
+			await handleSave();
+		}
+		setIsEdit((v) => !v);
+	};
+	const characteristics = allowedFields.map((field) => {
 		return {
 			label: field.name,
-			value:
-				field.value instanceof Date
-					? field.value.toLocaleDateString()
-					: field.value.toString(),
+			value: field.value
+				? field.type == 'date'
+					? new Date(field.value as Date).toLocaleDateString()
+					: field.value?.toString()
+				: null,
 		};
 	});
 	const tagDiv = badges.map((tag, i) => (
-		<Badge
-			color={tag.color}
-			size="sm"
-			variant={dark ? 'outline' : 'light'}
-			// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-			key={i}
-		>
-			{tag.text}
-		</Badge>
+		<Link to={`/search?tag=${tag.text}`} key={tag.color + tag.text + i}>
+			<Badge color={tag.color} size="sm" variant={dark ? 'outline' : 'light'}>
+				{tag.text}
+			</Badge>
+		</Link>
 	));
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
+
+	const handleDelete = async () => {
+		await deleteItemAPI({ type: 'items', id: itemID as string });
+		toast.success(t('itemPage.deleted'));
+		navigate(`/collection/${colId}`);
+	};
+
+	const [image, setImage] = useState('');
+
+	const [isUploading, setIsUploading] = useState(false);
+
 	return (
 		<Box>
 			<Stack maw="80vw" m="auto" gap="0" mt="4em">
@@ -118,11 +207,18 @@ export default function ItemPage() {
 					style={{
 						marginBottom: '20px',
 						fontSize: '14px',
-					// color: '#34495e',
+						// color: '#34495e',
 					}}
-				// className={classes.navText}
+					// className={classes.navText}
 				>
-					{'collection->rarest books est 1980->items->библия'}
+					<Anchor
+						component={Link}
+						to={`/collection/${colId}`}
+						style={{ color: 'inherit', fontSize: '14px' }}
+					>
+						{t('general.collection')} {coltitle}
+					</Anchor>
+					{`->${isCreate ? t('itemPage.creating') : title}`}
 				</Text>
 
 				<Paper
@@ -143,38 +239,77 @@ export default function ItemPage() {
 							marginRight: '20px',
 							position: 'relative',
 							height: 'fit-content',
+							maxWidth: '100%',
 						}}
 					>
-						<Image
-							src={placeholder_item}
-							// src={placeholder_item2}
-							alt="Book cover"
-							style={{
-								width: '300px',
-								height: '400px',
-							//   objectFit: 'cover',
-							}}
-						/>
-						<ActionIcon
-						// className={classes['cardSection-icon']}
-							variant="transparent"
-							// color="gray"
-							style={{
-								position: 'absolute',
-								left: '270px',
-								bottom: '10px',
-							}}
-							onClick={() => setLiked((prev) => !prev)}
-						>
-							<IconHeart
-								size={24}
-								color="red"
-								fill={liked ? 'red' : 'transparent'}
-							/>
-						</ActionIcon>
-						<Button onClick={() => setIsEdit((v) => !v)} pos='absolute' right='0' top='0.5em'>
-							{isEdit ? 'Save' : 'Edit'}{' '}
-						</Button>
+						<Stack maw="400" className={classes.imageSection}>
+							<div
+								style={{ width: '400', height: '400', position: 'relative' }}
+							>
+								<Image
+									src={image || placeholder_item}
+									fit="contain"
+									alt="Item img"
+									style={{
+										width: '100%',
+										// height: '400px',
+									}}
+								/>
+								<ActionIconAuth
+									variant="transparent"
+									style={{
+										position: 'absolute',
+										// left: '270px',
+										right: '5px',
+										bottom: '10px',
+									}}
+									onClick={() =>
+										handleLike({
+											id: itemID as string,
+											setIsLiked: setIsLiked,
+											type: 'items',
+										})
+									}
+								>
+									<IconHeart
+										size={24}
+										color="red"
+										fill={isLiked ? 'red' : 'transparent'}
+									/>
+								</ActionIconAuth>
+							</div>
+
+							{isEdit && (
+								<ImageUpload
+									collectableId={_id}
+									image={image}
+									isUploading={isUploading}
+									setImage={setImage}
+									setIsUploading={setIsUploading}
+									setImageUploaded={setImageUploaded}
+								/>
+							)}
+						</Stack>
+
+						{canEdit && (
+							<>
+								<Button
+									pos="absolute"
+									right="0"
+									top="0.5em"
+									radius="9px 0px 0px 9px"
+									onClick={handleBtnSave}
+									disabled={isUploading}
+								>
+									{isEdit
+										? isCreate
+											? t('general.create')
+											: t('general.save')
+										: t('general.edit')}{' '}
+								</Button>
+								{!isCreate && <DeleteIcon handleDelete={handleDelete} />}
+							</>
+						)}
 					</div>
 
 					<div className={classes['item-description']}>
@@ -182,6 +317,7 @@ export default function ItemPage() {
 							<TextInput
 								value={title}
 								onChange={(event) => setTitle(event.currentTarget.value)}
+								placeholder={t('itemPage.itemTitle')}
 								style={{
 									fontSize: 30,
 									fontWeight: 700,
@@ -191,17 +327,17 @@ export default function ItemPage() {
 								mt="0.4em"
 								mb="0.0em"
 								pb="0"
-								w='65%'
-							// h='0.3em'
+								w="65%"
+								// h='0.3em'
 							/>
 						) : (
-							<div style={{maxWidth:'20%'}}>
-
+							<div style={{ maxWidth: '100%' }}>
 								<Title
 									order={1}
 									style={{
 										fontSize: '26px',
 										color: '#e74c3c',
+										wordWrap: 'break-word',
 									}}
 								>
 									{title}
@@ -210,17 +346,16 @@ export default function ItemPage() {
 						)}
 
 						<Text truncate="end" className={classes.author} mt="-7px" mb="5px">
-						by&nbsp;
+							{t('general.author')}&nbsp;
 							{/* <a href={authorId} >{author}</a> */}
 							<Anchor
 								size="14px"
 								className={classes.author}
 								component={Link}
-								to={`/user/${authorId}`}
-								target="_blank"
+								to={`/user/${ownerId}`}
 								underline="never"
 							>
-								{author}
+								{owner}
 							</Anchor>
 						</Text>
 
@@ -231,7 +366,9 @@ export default function ItemPage() {
 						{isEdit && (
 							<>
 								<br />
-								<div style={{ textAlign: 'center', width: '100%' }}>Tags</div>
+								<div style={{ textAlign: 'center', width: '100%' }}>
+									{t('general.tags')}
+								</div>
 								<BadgeInputForm badges={badges} setBadges={setBadges} />
 							</>
 						)}
@@ -239,27 +376,49 @@ export default function ItemPage() {
 						{isEdit ? (
 							<>
 								<br />
-								<div style={{ textAlign: 'center', width: '100%' }}>
-								Characteristics
+								<div
+									style={{
+										textAlign: 'center',
+										width: '100%',
+										fontWeight: '700',
+									}}
+								>
+									{t('general.characteristics')}
 								</div>
-								<CharacteristicsForm
-									fields={fields}
-									setFields={setFields}
-									charsctsType="setValues"
-								/>
+								{allowedFields.length ? (
+									<CharacteristicsForm
+										fields={allowedFields}
+										setFields={setAllowedFields}
+										charsctsType="setValues"
+									/>
+								) : (
+									<></>
+								)}
+								{allowedFields.length === 0 && isEdit && (
+									<>
+										{t('itemPage.noChrcts1')}
+										<br />
+										{t('itemPage.noChrcts2')}
+									</>
+								)}
 							</>
 						) : (
-							<Table w='fit-content'>
-								<tbody >
+							<Table w="fit-content">
+								<tbody>
 									{characteristics
 										.slice(0, showMore ? characteristics.length : 3)
 										.map((char) => (
-											<tr className={classes.rows}>
+											<tr
+												className={classes.rows}
+												key={char.label + char.value}
+											>
 												<td>
 													<Text>{char.label}:</Text>
 												</td>
-												<td >
-													<Text ml="0.55em" style={{whiteSpace:'pre-wrap'}}>{char.value}</Text>
+												<td>
+													<Text ml="0.55em" style={{ whiteSpace: 'pre-wrap' }}>
+														{char.value}
+													</Text>
 												</td>
 											</tr>
 										))}
@@ -267,19 +426,17 @@ export default function ItemPage() {
 							</Table>
 						)}
 						{!isEdit && characteristics.length > 3 && (
-							<div style={{width:'100%'}}>
+							<div style={{ width: '100%' }}>
 								<Button
 									onClick={() => setShowMore(!showMore)}
 									color="nonde"
 									className={classes['descr-btn']}
 								>
-									{showMore ? 'Show Less' : 'Show More'}
+									{showMore ? t('general.showLess') : t('general.showMore')}
 								</Button>
 							</div>
-						
 						)}
 						<br />
-					
 					</div>
 				</Paper>
 
@@ -293,111 +450,28 @@ export default function ItemPage() {
 					display="flex"
 					maw="80vw"
 				>
-					<Title
-						order={2}
-						style={{
-							marginBottom: '10px',
-							color: '#34495e',
-							justifyContent: 'center',
-						}}
-						display="flex"
-					>
-					COMMENTS
-					</Title>
-					<Divider
-						style={{
-							marginBottom: '20px',
-						}}
-					/>
-					<Stack>
-						<Box
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-								marginBottom: '10px',
-							}}
-						>
-							<Avatar
-								src="/placeholder.png"
-								alt="Petya"
+					{!isCreate && (
+						<>
+							<Title
+								order={2}
 								style={{
-									marginRight: '10px',
+									marginBottom: '10px',
+									color: '#34495e',
+									justifyContent: 'center',
+								}}
+								display="flex"
+							>
+								{t('general.comments').toLocaleUpperCase()}
+							</Title>
+							<Divider
+								style={{
+									marginBottom: '20px',
 								}}
 							/>
-							<div>
-								<Text
-									style={{
-										fontWeight: 500,
-									}}
-								>
-								Petya
-								</Text>
-								<Text className={classes['comment-text']}>
-								Вау, супер крутая книга. Сам с женой её читаю
-								</Text>
-							</div>
-						</Box>
-						<Box
-							style={{
-								display: 'flex',
-								alignItems: 'center',
-								marginBottom: '20px',
-							}}
-						>
-							<Avatar
-								src="/placeholder.png"
-								alt="Ира"
-								style={{
-									marginRight: '10px',
-								}}
-							/>
-							<div>
-								<Text
-									style={{
-										fontWeight: 500,
-									}}
-								>
-								Ира
-								</Text>
-								<Text className={classes['comment-text']}>
-								Очень качественная книга, никогда подобного не читал. Вот что
-								нужно читать своим детям
-								</Text>
-							</div>
-						</Box>
-						<div className="comment-submit-section">
-							{authUser ? (
-								<TextInput
-									placeholder="Your comment"
-									rightSection={
-										<ActionIcon>
-											<IconBrandTelegram size={16} />
-										</ActionIcon>
-									}
-									style={
-										{
-										// paddingRight: '30px',
-										}
-									}
-								/>
-							) : (
-								<TextInput
-									placeholder="You must be logged in to comment"
-									disabled
-									rightSection={
-										<ActionIcon disabled>
-											<IconBrandTelegram size={16} />
-										</ActionIcon>
-									}
-									styles={{
-										input: {
-											textAlign: 'center',
-										},
-									}}
-								/>
-							)}
-						</div>
-					</Stack>
+
+							<CommentsBox />
+						</>
+					)}
 				</Paper>
 			</Stack>
 		</Box>

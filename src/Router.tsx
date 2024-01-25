@@ -5,6 +5,8 @@ import { HomePage } from './pages/Home/Home.page';
 import CollectionPage from './pages/Collection/Collection.page';
 import ItemPage from './pages/Item/Item.page';
 import SearchPage from './pages/Search/Search.page';
+import PrivateRoute from './components/Auth/PrivateRoute';
+import NotFound from './pages/NotFound/NotFound';
 
 const router = createBrowserRouter([
 	{
@@ -15,15 +17,15 @@ const router = createBrowserRouter([
 				path: '/',
 				element: (
 					<Suspense fallback="Загрузка...">
-						<HomePage/>
+						<HomePage />
 					</Suspense>
 				),
 			},
 			{
-				path: '/collection/:collectiID',
+				path: '/collection/:collectionID',
 				element: (
 					<Suspense fallback="Загрузка...">
-						<CollectionPage/>
+						<CollectionPage  />
 					</Suspense>
 				),
 			},
@@ -31,23 +33,35 @@ const router = createBrowserRouter([
 				path: '/item/:itemID',
 				element: (
 					<Suspense fallback="Загрузка...">
-						<ItemPage/>
+						<ItemPage />
 					</Suspense>
 				),
 			},
 			{
-				path: '/collection/:collectiID/addItem',
+				path: '/collection/:collectionID/addItem',
 				element: (
-					<Suspense fallback="Загрузка...">
-						Страница добавления итема
-					</Suspense>
+					<PrivateRoute>
+						<Suspense fallback="Загрузка...">
+						<ItemPage isCreate/>
+						</Suspense>
+					</PrivateRoute>
+				),
+			},
+			{
+				path: '/collection/createNew',
+				element: (
+					<PrivateRoute>
+						<Suspense fallback="Загрузка...">
+						<CollectionPage isCreate />
+						</Suspense>
+					</PrivateRoute>
 				),
 			},
 			{
 				path: '/search',
 				element: (
 					<Suspense fallback="Загрузка...">
-						<SearchPage/>
+						<SearchPage />
 					</Suspense>
 				),
 			},
@@ -55,16 +69,14 @@ const router = createBrowserRouter([
 				path: '/user/:authorId',
 				element: (
 					<Suspense fallback="Загрузка...">
-						<SearchPage/>
+						<SearchPage />
 					</Suspense>
 				),
 			},
 			{
-				path: '/collection/createNew',
+				path: '*',
 				element: (
-					<Suspense fallback="Загрузка...">
-						Страница создания коллекции
-					</Suspense>
+						<NotFound/>
 				),
 			},
 		],
