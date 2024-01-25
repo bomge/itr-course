@@ -50,17 +50,33 @@ export default function SearchPage() {
 	}, [authorId, axiosPrivate]);
 
 	useEffect(() => {
-		async function fetchSearch() {
+		async function fetchSearchFilter() {
 			try {
-				const { data } = await axiosPublic.post('/search', { tag, category });
+				const { data } = await axiosPrivate.post('/search/filter', {
+					tag,
+					category,
+				});
 				setItems(data);
 				setLoading(false);
 			} catch (e) {
 				setLoading(false);
 			}
 		}
-		fetchSearch();
-	}, [tag, category]);
+		if (tag || category) fetchSearchFilter();
+	}, [tag, category, axiosPrivate]);
+
+	useEffect(() => {
+		async function fetchSearchText() {
+			try {
+				const { data } = await axiosPrivate.post('/search', { text });
+				setItems(data);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+			}
+		}
+		if (text) fetchSearchText();
+	}, [text, axiosPrivate]);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);

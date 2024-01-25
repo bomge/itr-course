@@ -51,6 +51,7 @@ app.use('/auth', require('./routes/authRoutes'))
 app.use('/users', require('./routes/userRoutes.js'))
 app.use('/collections', require('./routes/collectionRoutes.js'))
 app.use('/items', require('./routes/itemRoutes.js'))
+app.use('/seed', require('./routes/seedRoutes.js'))
 
 app.use('/upload', require('./routes/fileRoutes.js'))
 
@@ -65,6 +66,9 @@ mongoose.connection.once('open', () => {
     console.log('Successfully Connected to MongoDB')
     console.log(`localhost:${port}`);
   })
+
+  
+
 })
 mongoose.connection.on('error', (err) => {
   console.log(err)

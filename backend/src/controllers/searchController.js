@@ -1,20 +1,20 @@
-const Collections = require("../models/Collections");
-const CollectionsTypes = require("../models/CollectionTypes");
-const Items = require("../models/Items");
-const Users = require("../models/User");
-const { ObjectId } = require("mongodb");
+const Collections = require('../models/Collections');
+const CollectionsTypes = require('../models/CollectionTypes');
+const Items = require('../models/Items');
+const Users = require('../models/User');
+const { ObjectId } = require('mongodb');
 //7 larger collections
 //7 newest items
 
-const COLLECTIONS_COUNT = +process.env.HOMEDATA_COLLECTIONS_COUNT
-const ITEMS_COUNT = +process.env.HOMEDATA_ITEMS_COUNT
+const COLLECTIONS_COUNT = +process.env.HOMEDATA_COLLECTIONS_COUNT;
+const ITEMS_COUNT = +process.env.HOMEDATA_ITEMS_COUNT;
 
 const homeData = async (req, res) => {
 	const userId = req.id;
 	const queryCollectionLargest = [
 		{
 			$group: {
-				_id: "$collectionId",
+				_id: '$collectionId',
 				count: { $sum: 1 },
 			},
 		},
@@ -26,49 +26,49 @@ const homeData = async (req, res) => {
 		},
 		{
 			$lookup: {
-				from: "collections",
-				localField: "_id",
-				foreignField: "_id",
-				as: "collection",
+				from: 'collections',
+				localField: '_id',
+				foreignField: '_id',
+				as: 'collection',
 			},
 		},
 		{
 			$lookup: {
-				from: "users",
-				localField: "collection.owner",
-				foreignField: "_id",
-				as: "owner_info",
+				from: 'users',
+				localField: 'collection.owner',
+				foreignField: '_id',
+				as: 'owner_info',
 			},
 		},
-		{ $unwind: "$owner_info" },
+		{ $unwind: '$owner_info' },
 		{
 			$lookup: {
-				from: "collectiontypes",
-				localField: "collection.type",
-				foreignField: "_id",
-				as: "type_info",
+				from: 'collectiontypes',
+				localField: 'collection.type',
+				foreignField: '_id',
+				as: 'type_info',
 			},
 		},
-		{ $unwind: "$type_info" },
+		{ $unwind: '$type_info' },
 		{
 			$replaceRoot: {
 				newRoot: {
-					$mergeObjects: [{ $arrayElemAt: ["$collection", 0] }, "$$ROOT"],
+					$mergeObjects: [{ $arrayElemAt: ['$collection', 0] }, '$$ROOT'],
 				},
 			},
 		},
 		{
 			$addFields: {
 				isLiked: {
-					$in: [ObjectId(userId), "$likes"],
+					$in: [ObjectId(userId), '$likes'],
 				},
 				owner: {
-					_id: "$owner_info._id",
-					name: "$owner_info.name",
+					_id: '$owner_info._id',
+					name: '$owner_info.name',
 				},
 				type: {
-					_id: "$type_info._id",
-					type: "$type_info.type",
+					_id: '$type_info._id',
+					type: '$type_info.type',
 				},
 			},
 		},
@@ -87,21 +87,21 @@ const homeData = async (req, res) => {
 		.sort({ createdAt: -1 })
 		.limit(ITEMS_COUNT)
 		.populate({
-			path: "owner",
-			select: "_id name",
+			path: 'owner',
+			select: '_id name',
 		})
 		.populate({
-			path: "collectionId",
-			select: "_id title",
+			path: 'collectionId',
+			select: '_id title',
 		})
 		.lean();
 
 	const uniqueTagsUsage_p = Items.aggregate([
-		{ $unwind: "$tags" },
+		{ $unwind: '$tags' },
 
 		{
 			$group: {
-				_id: "$tags.text",
+				_id: '$tags.text',
 				count: { $sum: 1 },
 			},
 		},
@@ -109,7 +109,7 @@ const homeData = async (req, res) => {
 		{
 			$project: {
 				_id: 0,
-				text: "$_id",
+				text: '$_id',
 				count: 1,
 			},
 		},
@@ -142,7 +142,7 @@ const userAllObjects = async (req, res) => {
 
 	const owner = await Users.findById(fetchUserId, { name: 1 });
 	if (!owner) {
-		return res.status(404).json({ message: "User not found" });
+		return res.status(404).json({ message: 'User not found' });
 	}
 
 	const query = [
@@ -150,36 +150,36 @@ const userAllObjects = async (req, res) => {
 
 		{
 			$lookup: {
-				from: "users",
-				localField: "owner",
-				foreignField: "_id",
-				as: "owner_info",
+				from: 'users',
+				localField: 'owner',
+				foreignField: '_id',
+				as: 'owner_info',
 			},
 		},
 
-		{ $unwind: "$owner_info" },
+		{ $unwind: '$owner_info' },
 		{
 			$lookup: {
-				from: "collectiontypes",
-				localField: "type",
-				foreignField: "_id",
-				as: "type_info",
+				from: 'collectiontypes',
+				localField: 'type',
+				foreignField: '_id',
+				as: 'type_info',
 			},
 		},
-		{ $unwind: "$type_info" },
+		{ $unwind: '$type_info' },
 
 		{
 			$addFields: {
 				isLiked: {
-					$in: [ObjectId(reqUserId), "$likes"],
+					$in: [ObjectId(reqUserId), '$likes'],
 				},
 				owner: {
-					_id: "$owner_info._id",
-					name: "$owner_info.name",
+					_id: '$owner_info._id',
+					name: '$owner_info.name',
 				},
 				type: {
-					_id: "$type_info._id",
-					type: "$type_info.type",
+					_id: '$type_info._id',
+					type: '$type_info.type',
 				},
 			},
 		},
@@ -194,12 +194,12 @@ const userAllObjects = async (req, res) => {
 	const items_p = Items.find({ owner: ObjectId(fetchUserId) }, { comments: 0 })
 		.sort({ createdAt: -1 })
 		.populate({
-			path: "owner",
-			select: "_id name",
+			path: 'owner',
+			select: '_id name',
 		})
 		.populate({
-			path: "collectionId",
-			select: "_id title",
+			path: 'collectionId',
+			select: '_id title',
 		})
 		.lean();
 	const collections_p = Collections.aggregate(query);
@@ -217,32 +217,52 @@ const userAllObjects = async (req, res) => {
 };
 
 const uniqueItemTags = async (req, res) => {
-	const uniqueTags = await Items.distinct("tags.text");
+	const uniqueTags = await Items.distinct('tags.text');
 
 	return res.json({ tags: uniqueTags });
 };
 
 const simpleSerachTagCategory = async (req, res) => {
-	const { tag, category } = req.body
-	const result = {items: [], collections:[]};
+	const userId = req.id;
+	const { tag, category } = req.body;
+	const result = { items: [], collections: [] };
 
 	if (tag) {
-		const items = await Items.find({
-			"tags.text": tag,
+		const items_db = await Items.find({
+			'tags.text': tag,
+		})
+			.populate({
+				path: 'owner',
+				select: '_id name',
+			})
+			.populate({
+				path: 'collectionId',
+				select: '_id title',
+			})
+			.lean();
+
+		const items = items_db.map((item) => {
+			return {
+				...item,
+				isLiked: userId ? item.likes.find((id) => id == userId) : false,
+				likes: null,
+			};
 		});
 
 		result.items = items;
 	} else if (category) {
-		const recordsTypeId = (await CollectionsTypes.findOne({ type: category }))?._id;
-		console.log(recordsTypeId)
+		const recordsTypeId = (await CollectionsTypes.findOne({ type: category }))
+			?._id;
+		console.log(recordsTypeId);
 		if (recordsTypeId) {
 			const recordsCollections = await Collections.find({
 				type: recordsTypeId,
-			})        .populate({
-				path: 'owner',
-				select: '_id name',
 			})
-			.populate('type');
+				.populate({
+					path: 'owner',
+					select: '_id name',
+				})
+				.populate('type');
 			result.collections = recordsCollections;
 		}
 	}
@@ -250,9 +270,116 @@ const simpleSerachTagCategory = async (req, res) => {
 	return res.json(result);
 };
 
+const textSearch = async (req, res) => {
+	const userId = req.id;
+	const { text } = req.body;
+	const result = { items: [], collections: [] };
+
+	const searchText = `"${text}"`;
+
+	// let author_p = Users.find({$text: {$search: searchText}})
+	const collections_p = Collections.find({ $text: { $search: searchText } })
+		.populate({
+			path: 'owner',
+			select: '_id name',
+		})
+		.populate({
+			path: 'type',
+		})
+		.lean();
+	const items_p = Items.find({ $text: { $search: searchText } })
+		.populate({
+			path: 'owner',
+			select: '_id name',
+		})
+		.populate({
+			path: 'collectionId',
+			select: '_id title',
+		})
+		.lean();
+
+	const tags_p = CollectionsTypes.find({
+		$text: { $search: searchText },
+	}).lean();
+
+	const [collections_res, items_res, tags_res] = await Promise.all([
+		collections_p,
+		items_p,
+		tags_p,
+	]);
+
+	//search collection by tags
+	const tagPromises = tags_res.map((tag) => {
+		return Collections.find({ type: tag._id }).select({ title: 1, _id: 1 });
+	});
+	const collectionsRes2 = await Promise.all(tagPromises);
+	if (collectionsRes2[0]) collections_res.push(...collectionsRes2);
+
+	const items = items_res.map((item) => {
+		return {
+			...item,
+			isLiked: userId ? item.likes.find((id) => id == userId) : false,
+			likes: null,
+		};
+	});
+	const collections = collections_res.map((item) => {
+		return {
+			...item,
+			isLiked: userId ? item.likes.find((id) => id == userId) : false,
+			likes: null,
+		};
+	});
+
+	result.items = items;
+	result.collections = collections;
+
+	res.json(result);
+};
+const textSearchMified = async (req, res) => {
+	const userId = req.id;
+	const { text } = req.body;
+	const result = { items: [], collections: [] };
+
+	// const searchText = `"${text}"`;
+	const searchText = `${text}`;
+
+	// let author_p = Users.find({$text: {$search: searchText}})
+	const collections_p = Collections.find(
+		{ $text: { $search: searchText } },
+		{ title: 1, _id: 1 },
+	);
+	const items_p = Items.find(
+		{ $text: { $search: searchText } },
+		{ title: 1, _id: 1 },
+	);
+	const tags_p = CollectionsTypes.find({
+		$text: { $search: searchText },
+	}).lean();
+
+	const [collections_res, items_res, tags_res] = await Promise.all([
+		collections_p,
+		items_p,
+		tags_p,
+	]);
+
+	//search collection by tags
+	const tagPromises = tags_res.map((tag) => {
+		return Collections.find({ type: tag._id }).select({ title: 1, _id: 1 });
+	});
+	const collectionsRes2 = await Promise.all(tagPromises);
+	if (collectionsRes2[0]) collections_res.push(...collectionsRes2[0]);
+
+	result.items = items_res;
+	result.collections = collections_res;
+
+	res.json(result);
+};
+
 module.exports = {
 	homeData,
 	userAllObjects,
 	uniqueItemTags,
-	simpleSerachTagCategory
+	simpleSerachTagCategory,
+	textSearch,
+	textSearchMified,
 };

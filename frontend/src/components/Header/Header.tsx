@@ -30,7 +30,6 @@ export type UserState = { name: string; email: string; id: string };
 
 export default function Header() {
 	const { t } = useTranslation();
-	const [searchText, setSearchText] = useState('');
 	const [
 		drawerOpened,
 		{ toggle: toggleDrawer, close: closeDrawer, open: openDrawer },
@@ -116,9 +115,9 @@ export default function Header() {
 						</Group>
 
 						<Group visibleFrom="xxs">
-							<SearchBar value={searchText} setValue={setSearchText} />
+							<SearchBar />
 
-							<Group visibleFrom="md">
+							<Group visibleFrom="sm">
 								<LanguagePicker />
 								<ThemeSwitcher />
 								{userinfo ? (
@@ -143,7 +142,8 @@ export default function Header() {
 						<Burger
 							opened={drawerOpened}
 							onClick={toggleDrawer}
-							hiddenFrom="md"
+							// hiddenFrom="md"
+							hiddenFrom="sm"
 						/>
 					</Group>
 				</header>
@@ -176,7 +176,7 @@ export default function Header() {
 				>
 					<ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
 						<Divider my="sm" mt="5px" />
-						<SearchBar value={searchText} setValue={setSearchText} />
+						<SearchBar  />
 
 						<a href="#" className={classes.link}>
 							{t('header.home')}

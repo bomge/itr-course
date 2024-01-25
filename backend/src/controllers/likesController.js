@@ -11,6 +11,11 @@ const toggleLikeCollection = async (req, res) => { //prev it was for item and co
 
     const userReqId = req.id;
 	const obj = await Collections.findOne({_id: id})
+
+	if(!obj){
+		return res.status(400).json({ message: 'Collection not found' });
+	}
+
 	const isLiked = obj.likes.includes(userReqId)
 	let result
 	if(isLiked){
@@ -32,6 +37,8 @@ const toggleLikeItem = async (req, res) => { //prev it was for item and collecti
 
     const userReqId = req.id;
 	const obj = await Items.findOne({_id: id})
+	if(!obj)
+		return res.status(400).json({ message: 'Item not found' });
 	const isLiked = obj.likes.includes(userReqId)
 	let result
 	if(isLiked){
