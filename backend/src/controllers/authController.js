@@ -29,6 +29,7 @@ const login = async (req, res) => {
   const accessToken = genAccesToken(foundUser);
   const refreshToken = genRefreshToken(foundUser);
 
+  res.cookie('Authorization', 'Bearer ' + accessToken);
 
   res.json({ accessToken,refreshToken });
 };
@@ -51,6 +52,8 @@ const register = async (req, res) => {
   
   const accessToken = genAccesToken(createdUser);
   const refreshToken = genRefreshToken(createdUser);
+
+  res.cookie('Authorization', 'Bearer ' + accessToken);
 
   res.json({ accessToken,refreshToken });
 };
@@ -76,6 +79,7 @@ const refresh = async (req, res) => {
       const accessToken =  genAccesToken(foundUser);
       const refreshToken = genRefreshToken(foundUser);
 
+      res.cookie('Authorization', 'Bearer ' + accessToken);
 
       res.json({ accessToken,refreshToken });
     }
@@ -87,6 +91,9 @@ const logout = async (req, res) => {
   if (!cookies?.jwt) {
     return res.sendStatus(204); //No content
   }
+
+  res.clearCookie('Authorization');
+
   return res.sendStatus(200)
 };
 
