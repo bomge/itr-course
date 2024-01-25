@@ -1,4 +1,5 @@
 import axios from '../api/axios';
+import Cookies from 'js-cookie';
 
 type Tokens = {
 	accessToken: string;
@@ -11,6 +12,10 @@ const useRefreshAccessToken = () => {
 		await axios
 			.get('/auth/refresh', {
 				withCredentials: true,
+				headers: {
+					// biome-ignore lint/style/useTemplate: <explanation>
+					Authorization: 'Bearer ' + Cookies?.get('refresh_token'),
+				},
 			})
 			.then((response) => {
 				tokens = response.data;
