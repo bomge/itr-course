@@ -1,12 +1,17 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Layout } from './Layout/Layout';
-import { Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import { HomePage } from './pages/Home/Home.page';
-import CollectionPage from './pages/Collection/Collection.page';
-import ItemPage from './pages/Item/Item.page';
+// import CollectionPage from './pages/Collection/Collection.page';
+// import ItemPage from './pages/Item/Item.page';
 import SearchPage from './pages/Search/Search.page';
 import PrivateRoute from './components/Auth/PrivateRoute';
 import NotFound from './pages/NotFound/NotFound';
+import { useTranslation } from 'react-i18next';
+
+const CollectionPage = lazy(() => import('./pages/Collection/Collection.page'));
+const ItemPage = lazy(() => import('./pages/Item/Item.page'));
+
 
 const router = createBrowserRouter([
 	{
@@ -16,7 +21,7 @@ const router = createBrowserRouter([
 			{
 				path: '/',
 				element: (
-					<Suspense fallback="Загрузка...">
+					<Suspense fallback="Loading...">
 						<HomePage />
 					</Suspense>
 				),
@@ -24,7 +29,7 @@ const router = createBrowserRouter([
 			{
 				path: '/collection/:collectionID',
 				element: (
-					<Suspense fallback="Загрузка...">
+					<Suspense fallback="Loading...">
 						<CollectionPage  />
 					</Suspense>
 				),
@@ -32,7 +37,7 @@ const router = createBrowserRouter([
 			{
 				path: '/item/:itemID',
 				element: (
-					<Suspense fallback="Загрузка...">
+					<Suspense fallback="Loading...">
 						<ItemPage />
 					</Suspense>
 				),
@@ -41,7 +46,7 @@ const router = createBrowserRouter([
 				path: '/collection/:collectionID/addItem',
 				element: (
 					<PrivateRoute>
-						<Suspense fallback="Загрузка...">
+						<Suspense fallback="Loading...">
 						<ItemPage isCreate/>
 						</Suspense>
 					</PrivateRoute>
@@ -51,7 +56,7 @@ const router = createBrowserRouter([
 				path: '/collection/createNew',
 				element: (
 					<PrivateRoute>
-						<Suspense fallback="Загрузка...">
+						<Suspense fallback="Loading...">
 						<CollectionPage isCreate />
 						</Suspense>
 					</PrivateRoute>
@@ -60,7 +65,7 @@ const router = createBrowserRouter([
 			{
 				path: '/search',
 				element: (
-					<Suspense fallback="Загрузка...">
+					<Suspense fallback="Loading...">
 						<SearchPage />
 					</Suspense>
 				),
@@ -68,7 +73,7 @@ const router = createBrowserRouter([
 			{
 				path: '/user/:authorId',
 				element: (
-					<Suspense fallback="Загрузка...">
+					<Suspense fallback="Loading...">
 						<SearchPage />
 					</Suspense>
 				),
