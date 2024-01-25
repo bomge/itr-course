@@ -66,7 +66,7 @@ function CollectionPage({ isCreate = false }) {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 
-	const [isLoading,setIsLoading] = useState(true)
+	const [isLoading,setIsLoading] = useState(!isCreate)
 	const [canEdit, setCanEdit] = useState(isCreate);
 
 	const [expand, setExpand] = useState(false);
@@ -186,9 +186,7 @@ function CollectionPage({ isCreate = false }) {
 		return expand ? description : description.slice(0, maxDescriptionLength);
 	};
 
-	// truncate="end"
-	// items;
-	//fakeItems_collectPage
+
 	const itemsDiv = items.map((item, i) => (
 		// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 		<ItemCard_simple item={item} key={i} />
@@ -457,7 +455,7 @@ function CollectionPage({ isCreate = false }) {
 					</Text>
 					<Flex
 						style={{
-							marginBottom: 20,
+							marginBottom: 25,
 						}}
 						wrap="wrap"
 						gap="5em"
