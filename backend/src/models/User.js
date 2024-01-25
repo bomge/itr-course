@@ -7,4 +7,7 @@ const userSchema = new mongoose.Schema({
   status: { type: String, default: 'active' },
   customId: { type: String},
 })
+
+userSchema.index({name: 'text'}, {name: 'text_index'})
+
 module.exports = mongoose.model('Users', userSchema)
