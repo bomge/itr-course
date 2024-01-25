@@ -226,7 +226,7 @@ function CollectionPage({ isCreate = false }) {
 	const [isUploading, setIsUploading] = useState(false);
 
 	if(isLoading){
-		return t('general.loading')
+		t('general.loading')
 	}
 
 	return (

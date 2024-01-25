@@ -6,6 +6,7 @@ const {genAccesToken,genRefreshToken} = require('../helpers/jwt')
 
 const SALT_ROUNDS = +process.env.SALT_ROUNDS
 
+
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
