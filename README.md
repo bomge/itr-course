@@ -35,3 +35,7 @@
 
 - Real-time Comments: Comments works in real time through sockets.
 
+>### Full text search functionality
+
+- Users can  enter text in the search header. Result is collectable title
+- Pressing enter on a search bar now navigates to a search page  with found result (collections/card)
