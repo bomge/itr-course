@@ -13,7 +13,7 @@ const getAllTypes = async (req, res) => {
 
 
 // init
-async function seedTypes(req,res){
+async function seedTypes(){
 	const collectionTypes = [
 		"Books",
 		"Movies",
@@ -47,7 +47,7 @@ async function seedTypes(req,res){
   
 	await CollectionsTypes.bulkWrite(bulkOps);
 	
-	return res.json({message:'Collection Types Seeded'});
+	console.log('Collection Types Seeded');
 }
 
 module.exports = {

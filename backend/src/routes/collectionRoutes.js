@@ -11,11 +11,11 @@ const verifyJWT = require('../middleware/verifyJWT');
 router.route('/getAll').get(collectionController.getAllCollections);
 router.route('/types').get(collectionTypesController.getAllTypes);
 router.route('/:id').get(collectionController.getCollection);
-router.route('/seed/types').get(collectionTypesController.seedTypes);
 
 router.use(verifyJWT);
 router.route('/new').post(collectionController.createCollection);
 router.route('/like').put(likeCollection, likesController.toggleLikeCollection);
+router.route('/seedTypes').get(collectionTypesController.seedTypes);
 router.route('/mini/:id').get(collectionController.getCollectionMini);
 router.route('/:id').post(collectionController.updateCollection);
 router.route('/:id').delete(collectionController.deleteCollection);
