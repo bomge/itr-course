@@ -1,0 +1,9 @@
+
+.comments {
+	background: light-dark(#f7f7f7,#2e2e2e26);
+}
+
+.noComments{
+	text-align: center;
+	color: gray;
+}

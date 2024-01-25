@@ -1,0 +1,17 @@
+.card-title{
+	width: 100%;
+	/* this code clamps based on specified lines */
+	overflow: hidden;
+   -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  display: -webkit-box;
+  text-align: left;
+  font-size: 18px;
+	font-weight: 300;
+}
+
+.imageSection {
+	background: light-dark(rgb(43 43 43 / 4%), #00000017);
+  border-bottom: 2px solid light-dark(rgb(43 43 43 / 4%), #434242);;
+
+}
