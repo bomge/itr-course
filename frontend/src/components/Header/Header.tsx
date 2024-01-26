@@ -117,7 +117,7 @@ export default function Header() {
 						<Group visibleFrom="xxs">
 							<SearchBar />
 
-							<Group visibleFrom={userinfo ? "sm" : "md"}>
+							<Group visibleFrom={userinfo ? 'sm' : 'md'}>
 								<LanguagePicker />
 								<ThemeSwitcher />
 								{userinfo ? (
@@ -143,8 +143,7 @@ export default function Header() {
 							opened={drawerOpened}
 							onClick={toggleDrawer}
 							// hiddenFrom="md"
-							hiddenFrom={userinfo ? "sm" : "md"}
-							
+							hiddenFrom={userinfo ? 'sm' : 'md'}
 						/>
 					</Group>
 				</header>
@@ -177,14 +176,15 @@ export default function Header() {
 				>
 					<ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
 						<Divider my="sm" mt="5px" />
-						<SearchBar  />
+						<SearchBar />
 
-						<a href="#" className={classes.link}>
+						<Link to="/" className={classes.link} onClick={()=>closeDrawer()}>
 							{t('header.home')}
-						</a>
+						</Link>
+						<Link to="/collections/all" className={classes.link} onClick={()=>closeDrawer()}>
+							{t('header.collections')}
+						</Link>
 
-						
-						<Link className={classes.link} to='/collections/all'>{t('header.collections')}</Link>
 						<Divider my="sm" />
 
 						{!userinfo ? (

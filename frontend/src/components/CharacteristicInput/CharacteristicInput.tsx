@@ -53,10 +53,11 @@ const FieldTypeInput = ({ fieldType, onChange, value, ...props }) => {
 				/>
 			);
 		case 'date':
+			console.log(value)
 			return (
 				<DatePickerInput
 					onChange={onChange}
-					value={new Date(value)}
+					value={value ? new Date(value) : new Date()}
 					placeholder={t('general.value')}
 					{...props}
 				/>

@@ -22,10 +22,10 @@ export default function SearchPage({ searchAll = false }) {
 	const { t } = useTranslation();
 	const [searchParams] = useSearchParams();
 
-	const { authorId } = useParams();
+	const { authorId, category } = useParams();
 	const text = searchParams.get('text');
 	const tag = searchParams.get('tag');
-	const category = searchParams.get('category');
+	// const category = searchParams.get('category');
 
 	const [items, setItems] = useState<SearchResult | null>(null);
 	const [ownerName, setOwnerName] = useState(authorId);
@@ -64,7 +64,6 @@ export default function SearchPage({ searchAll = false }) {
 		}
 		if (tag || category) fetchSearchFilter();
 	}, [tag, category, axiosPrivate]);
-
 	useEffect(() => {
 		async function fetchSearchText() {
 			try {
@@ -78,7 +77,6 @@ export default function SearchPage({ searchAll = false }) {
 		if (text) fetchSearchText();
 	}, [text, axiosPrivate]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		async function fetchAllCollections() {
 			try {
@@ -90,7 +88,7 @@ export default function SearchPage({ searchAll = false }) {
 			}
 		}
 		if (searchAll) fetchAllCollections();
-	}, []);
+	}, [searchAll, axiosPrivate]);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -120,9 +118,8 @@ export default function SearchPage({ searchAll = false }) {
 					gap="5em"
 					justify="center"
 				>
-					{userinfo && userinfo.id === authorId && (
-						<AddCard_SearchPage page="search" />
-					)}
+					{((userinfo && userinfo.id === authorId) ||
+						(userinfo && searchAll)) && <AddCard_SearchPage page="search" />}
 					{items?.collections?.map((col) => (
 						<CollectionCard item={col} key={col._id} />
 					))}

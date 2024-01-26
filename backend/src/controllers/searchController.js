@@ -139,7 +139,7 @@ const homeData = async (req, res) => {
 const userAllObjects = async (req, res) => {
 	const fetchUserId = req.params.id;
 	const reqUserId = req.id;
-	console.log({fetchUserId,})
+	console.log({ fetchUserId });
 	const owner = await Users.findById(fetchUserId, { name: 1 });
 	if (!owner) {
 		return res.status(404).json({ message: 'User not found' });
@@ -231,6 +231,7 @@ const simpleSerachTagCategory = async (req, res) => {
 		const items_db = await Items.find({
 			'tags.text': tag,
 		})
+			.sort({ createdAt: -1 })
 			.populate({
 				path: 'owner',
 				select: '_id name',
@@ -258,6 +259,7 @@ const simpleSerachTagCategory = async (req, res) => {
 			const recordsCollections = await Collections.find({
 				type: recordsTypeId,
 			})
+				.sort({ createdAt: -1 })
 				.populate({
 					path: 'owner',
 					select: '_id name',
@@ -279,6 +281,7 @@ const textSearch = async (req, res) => {
 
 	// let author_p = Users.find({$text: {$search: searchText}})
 	const collections_p = Collections.find({ $text: { $search: searchText } })
+		.sort({ createdAt: -1 })
 		.populate({
 			path: 'owner',
 			select: '_id name',
@@ -288,7 +291,7 @@ const textSearch = async (req, res) => {
 		})
 		.lean();
 	const items_p = Items.find({ $text: { $search: searchText } })
-		.populate({
+	.sort({ createdAt: -1 }).populate({
 			path: 'owner',
 			select: '_id name',
 		})
