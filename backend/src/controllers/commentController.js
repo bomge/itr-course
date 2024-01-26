@@ -16,10 +16,10 @@ const postComment = async (req, res) => {
             .json({ message: 'Text is to long. Max length is 512' });
     }
 
-    const { itemId } = req.params;
+    const { id } = req.params;
     const userReqId = req.id;
 
-    const item = await Items.findOne({ _id: itemId });
+    const item = await Items.findOne({ _id: id });
     if (!item) {
         return res.status(404).json({ message: 'Item not found' });
     }
@@ -38,9 +38,9 @@ const postComment = async (req, res) => {
 };
 
 const getComments = async (req, res) => {
-    const { itemId } = req.params;
+    const { id } = req.params;
 
-    const item = await Items.findById(itemId)  .populate({
+    const item = await Items.findById(id)  .populate({
 		path: 'comments',
 		select: 'author', // only populate the author field
 		populate: {
