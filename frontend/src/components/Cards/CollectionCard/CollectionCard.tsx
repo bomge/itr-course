@@ -146,7 +146,7 @@ export default function CollectionCard({ item, loading }: CollectionCardProps) {
 				<Anchor
 					component={Link}
 					size="16px"
-					to={`/search?category=${type.type}`}
+					to={`/collections/${type.type}`}
 					underline="never"
 				>
 					{type.type}

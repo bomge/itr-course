@@ -79,6 +79,14 @@ const router = createBrowserRouter([
 				),
 			},
 			{
+				path: '/collections/:category',
+				element: (
+					<Suspense fallback="Loading...">
+						<SearchPage/>
+					</Suspense>
+				),
+			},
+			{
 				path: '/user/:authorId',
 				element: (
 					<Suspense fallback="Loading...">
