@@ -59,8 +59,8 @@ const register = async (req, res) => {
 };
 
 const refresh = async (req, res) => {
-  const cookies = req.cookies;
-  const refreshToken = cookies.refresh_token
+  // const cookies = req.cookies;
+  const refreshToken = req.headers.refresh_token
   if (!refreshToken) {
     return res.status(401).json({ message: 'Unauthorized (no jwt)' });
   }
