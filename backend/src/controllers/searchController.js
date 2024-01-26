@@ -137,9 +137,9 @@ const homeData = async (req, res) => {
 };
 
 const userAllObjects = async (req, res) => {
-	const fetchUserId = req.params.userId;
+	const fetchUserId = req.params.id;
 	const reqUserId = req.id;
-
+	console.log({fetchUserId,})
 	const owner = await Users.findById(fetchUserId, { name: 1 });
 	if (!owner) {
 		return res.status(404).json({ message: 'User not found' });
