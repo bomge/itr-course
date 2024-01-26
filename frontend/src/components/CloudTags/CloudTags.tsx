@@ -117,12 +117,13 @@ export default function CloudTags({ tags: data }: CloudTagsProps) {
 							style={{
 								padding: '4px 12px',
 								borderRadius: '4px',
-								// color: randomColor(),
+								color: '#9b9b9b',
 							}}
 							variant="outline"
-							color={randomColor()}
+							// color={randomColor()}
+							color='gray'
 							radius="xl"
-							size="lg"
+							size="md"
 						>
 							{tag.text}
 						</Badge>
