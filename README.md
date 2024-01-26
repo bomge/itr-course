@@ -7,7 +7,8 @@ Deploy https://itr-course.vercel.app/
 ### Key Features:
 
 1. **Backend Communication**: The frontend now seamlessly communicates with the backend, eliminating the need for hardcoded data.
-3. **Localisation Support:** Now supports 2 languages: English and Polish.
+2. **Localisation Support:** Now supports 2 languages: English and Polish.
+3. **Mobile Responsive**
 
 >###  Home page
 - **Largest Collections**: Top largest collections by Items count
