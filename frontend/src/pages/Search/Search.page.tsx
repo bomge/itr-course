@@ -22,10 +22,10 @@ export default function SearchPage({ searchAll = false }) {
 	const { t } = useTranslation();
 	const [searchParams] = useSearchParams();
 
-	const { authorId } = useParams();
+	const { authorId, category } = useParams();
 	const text = searchParams.get('text');
 	const tag = searchParams.get('tag');
-	const category = searchParams.get('category');
+	// const category = searchParams.get('category');
 
 	const [items, setItems] = useState<SearchResult | null>(null);
 	const [ownerName, setOwnerName] = useState(authorId);
@@ -120,7 +120,7 @@ export default function SearchPage({ searchAll = false }) {
 					gap="5em"
 					justify="center"
 				>
-					{userinfo && userinfo.id === authorId && (
+					{((userinfo && userinfo.id === authorId) || (userinfo && searchAll)) && (
 						<AddCard_SearchPage page="search" />
 					)}
 					{items?.collections?.map((col) => (
