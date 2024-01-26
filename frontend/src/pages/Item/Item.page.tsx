@@ -148,7 +148,7 @@ export default function ItemPage({ isCreate = false }) {
 	const handleSave = async () => {
 		const postData = {
 			fields: allowedFields.map((a) => {
-				return { value: a.value || null, _id: a._id };
+				return { value: a.value ?? null, _id: a._id };
 			}), //: allowedFields.filter((a) => a.value),
 			title,
 			tags: badges.filter((a) => a.text),
@@ -175,7 +175,7 @@ export default function ItemPage({ isCreate = false }) {
 	const characteristics = allowedFields.map((field) => {
 		return {
 			label: field.name,
-			value: field.value
+			value: field.value || field.type=='logical'
 				? field.type == 'date'
 					? new Date(field.value as Date).toLocaleDateString()
 					: field.value?.toString()
@@ -419,6 +419,7 @@ export default function ItemPage({ isCreate = false }) {
 							<Table w="fit-content">
 								<tbody>
 									{characteristics
+										.filter(c=>c.value ?? false )
 										.slice(0, showMore ? characteristics.length : 3)
 										.map((char) => (
 											<tr
@@ -430,7 +431,7 @@ export default function ItemPage({ isCreate = false }) {
 												</td>
 												<td>
 													<Text ml="0.55em" style={{ whiteSpace: 'pre-wrap' }}>
-														{char.value}
+														{(char.value)}
 													</Text>
 												</td>
 											</tr>
