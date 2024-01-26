@@ -64,7 +64,6 @@ export default function SearchPage({ searchAll = false }) {
 		}
 		if (tag || category) fetchSearchFilter();
 	}, [tag, category, axiosPrivate]);
-
 	useEffect(() => {
 		async function fetchSearchText() {
 			try {
@@ -78,7 +77,6 @@ export default function SearchPage({ searchAll = false }) {
 		if (text) fetchSearchText();
 	}, [text, axiosPrivate]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		async function fetchAllCollections() {
 			try {
@@ -90,7 +88,7 @@ export default function SearchPage({ searchAll = false }) {
 			}
 		}
 		if (searchAll) fetchAllCollections();
-	}, []);
+	}, [searchAll, axiosPrivate]);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -120,9 +118,8 @@ export default function SearchPage({ searchAll = false }) {
 					gap="5em"
 					justify="center"
 				>
-					{((userinfo && userinfo.id === authorId) || (userinfo && searchAll)) && (
-						<AddCard_SearchPage page="search" />
-					)}
+					{((userinfo && userinfo.id === authorId) ||
+						(userinfo && searchAll)) && <AddCard_SearchPage page="search" />}
 					{items?.collections?.map((col) => (
 						<CollectionCard item={col} key={col._id} />
 					))}
