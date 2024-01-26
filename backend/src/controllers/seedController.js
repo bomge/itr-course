@@ -21,7 +21,12 @@ async function seedTypes(req,res){
 		"Watches",
 		"Sneakers",
 		"Vintage Clothing",
-		"Jewelry" 
+		"Jewelry" ,
+		'Cards',
+		'Lego',
+		'Knives',
+		'Posters',
+		'Other'
 	  ];
 
 	const typeDocs = collectionTypes.map(type => ({type}));
