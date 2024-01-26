@@ -1,6 +1,7 @@
 
 Deploy https://itr-course.vercel.app/
-![image](https://github.com/bomge/itr-course/assets/28229134/6d54d72d-c121-4ccb-a3d0-252692e338e1)
+![image](https://github.com/bomge/itr-course/assets/28229134/d69adee8-9862-4261-ad1d-408d5184b223)
+
 
 
 ### Key Features:
