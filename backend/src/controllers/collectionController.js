@@ -7,17 +7,29 @@ const { ObjectId } = require('mongodb');
 
 
 const getAllCollections = async (req, res) => {
-    const collections = await Collections.find()
+    const userId = req.id;
+    const collections_db = await Collections.find()
         .populate({
             path: 'owner',
             select: '_id name',
         })
-        .populate('type');
+        .populate('type').lean();
 
-    if (!collections) {
+
+
+    if (!collections_db) {
         return res.status(400).json({ message: 'No collections found' });
     }
-    res.json(collections);
+
+    const collections = collections_db.map((item) => {
+		return {
+			...item,
+			isLiked: userId ? item.likes.find((id) => id == userId) : false,
+			likes: null,
+		};
+	});
+
+    res.json({collections});
 };
 
 const getCollection = async (req, res) => {

@@ -107,7 +107,8 @@
 	},
 	"seacrhPage": {
 	  "collection_by_author": "Kolekcja użytkownika {{authorName}}",
-	  "search_text": "Szukaj za" 
+	  "search_text": "Szukaj za",
+	  "allCollections":"Wszystkie kolekcje"
 	},
 	"api": {
 	  "errors": {

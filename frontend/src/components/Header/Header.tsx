@@ -109,7 +109,7 @@ export default function Header() {
 							<Link to="/" className={classes.link}>
 								{t('header.home')}
 							</Link>
-							<Link to="/" className={classes.link}>
+							<Link to="/collections/all" className={classes.link}>
 								{t('header.collections')}
 							</Link>
 						</Group>
@@ -183,10 +183,8 @@ export default function Header() {
 							{t('header.home')}
 						</a>
 
-						<a href="#" className={classes.link}>
-							{t('header.collections')}
-						</a>
-
+						
+						<Link className={classes.link} to='/collections/all'>{t('header.collections')}</Link>
 						<Divider my="sm" />
 
 						{!userinfo ? (

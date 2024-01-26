@@ -13,7 +13,6 @@ const useRefreshAccessToken = () => {
 			.get('/auth/refresh', {
 				withCredentials: true,
 				headers: {
-					// biome-ignore lint/style/useTemplate: <explanation>
 					refresh_token: Cookies?.get('refresh_token'),
 				},
 			})
