@@ -14,7 +14,7 @@ const useRefreshAccessToken = () => {
 				withCredentials: true,
 				headers: {
 					// biome-ignore lint/style/useTemplate: <explanation>
-					Authorization: 'Bearer ' + Cookies?.get('refresh_token'),
+					refresh_token: Cookies?.get('refresh_token'),
 				},
 			})
 			.then((response) => {
