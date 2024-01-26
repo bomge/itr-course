@@ -16,13 +16,13 @@ type SearchResult = {
 	items: IItemCard[];
 };
 
-export default function SearchPage() {
+export default function SearchPage({ searchAll = false }) {
 	const { userinfo } = useAuthStore();
+	const axiosPrivate = useAxiosPrivate();
+	const { t } = useTranslation();
 	const [searchParams] = useSearchParams();
 
-	const axiosPrivate = useAxiosPrivate();
 	const { authorId } = useParams();
-	const { t } = useTranslation();
 	const text = searchParams.get('text');
 	const tag = searchParams.get('tag');
 	const category = searchParams.get('category');
@@ -78,6 +78,20 @@ export default function SearchPage() {
 		if (text) fetchSearchText();
 	}, [text, axiosPrivate]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		async function fetchAllCollections() {
+			try {
+				const { data } = await axiosPrivate.get('/collections/getAll');
+				setItems(data);
+				setLoading(false);
+			} catch (e) {
+				setLoading(false);
+			}
+		}
+		if (searchAll) fetchAllCollections();
+	}, []);
+
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
@@ -91,9 +105,11 @@ export default function SearchPage() {
 		<Box>
 			<Stack maw="80vw" m="auto" gap="0" mt="4em">
 				<Text fw={700} style={{ fontSize: 'xx-large' }} mb="0.5em" ml="-0.5em">
-					{authorId
-						? t('seacrhPage.collection_by_author', { authorName: ownerName })
-						: `${t('seacrhPage.search_text')} ${text || tag || category}`}
+					{searchAll
+						? t('seacrhPage.allCollections')
+						: authorId
+						  ? t('seacrhPage.collection_by_author', { authorName: ownerName })
+						  : `${t('seacrhPage.search_text')} ${text || tag || category}`}
 				</Text>
 
 				<Flex

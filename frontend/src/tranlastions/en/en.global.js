@@ -108,7 +108,8 @@ export default {
 	},
 	seacrhPage:{
 		"collection_by_author": "Collectables by {{authorName}}",
-		"search_text": "Search for"
+		"search_text": "Search for",
+		'allCollections':"All collections"
 	},
 	api:{
 		errors:{
