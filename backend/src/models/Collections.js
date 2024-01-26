@@ -31,4 +31,4 @@ const CollectionSchema = new mongoose.Schema(
 );
 CollectionSchema.index({title: 'text', 'description_text': 'text', 'allowedFields.name':"text"}, {name: 'text_index'})
 
-module.exports = mongoose.model('Collections', CollectionSchema); // Singular model name
+module.exports = mongoose.model('Collections', CollectionSchema);

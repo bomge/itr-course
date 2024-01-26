@@ -4,8 +4,8 @@
   "description": "MERN-auth-roles a web application that alow you to manage authentication and roles of users using MERN (MongoDB Express Angular Node)",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon src/server",
-    "dev": "nodemon server"
+    "start": "node src/server",
+    "dev": "nodemon src/server"
   },
   "keywords": [],
   "author": "",

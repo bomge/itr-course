@@ -117,13 +117,13 @@ export default function Header() {
 						<Group visibleFrom="xxs">
 							<SearchBar />
 
-							<Group visibleFrom="sm">
+							<Group visibleFrom={userinfo ? "sm" : "md"}>
 								<LanguagePicker />
 								<ThemeSwitcher />
 								{userinfo ? (
 									<AvatarMenu closeDrawer={closeDrawer} />
 								) : (
-									<>
+									<Group visibleFrom="md">
 										<Button
 											variant="default"
 											radius="md"
@@ -134,7 +134,7 @@ export default function Header() {
 										<Button radius="md" onClick={HandleRegBtn_modal}>
 											{t('header.signUp')}
 										</Button>
-									</>
+									</Group>
 								)}
 							</Group>
 						</Group>
@@ -143,7 +143,8 @@ export default function Header() {
 							opened={drawerOpened}
 							onClick={toggleDrawer}
 							// hiddenFrom="md"
-							hiddenFrom="sm"
+							hiddenFrom={userinfo ? "sm" : "md"}
+							
 						/>
 					</Group>
 				</header>

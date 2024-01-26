@@ -13,10 +13,10 @@ const createItem = async (req, res) => {
     // 	.json({ message: 'title and description are required' });
     // }
 
-    const { collectionId } = req.params;
+    const { id } = req.params;
 	const userReqId = req.id;
 
-	const collection = await Collections.findOne({ _id: collectionId }, { owner: 1 });
+	const collection = await Collections.findOne({ _id: id }, { owner: 1 });
     if (!collection) {
         return res.status(404).json({ message: 'Collection not found' });
     }
@@ -33,7 +33,7 @@ const createItem = async (req, res) => {
 
     const createdItem = await Items.create({
         ...req.body,
-        collectionId,
+        collectionId: id,
         owner:userReqId,
         img:  imgObj?.url
     });
@@ -42,10 +42,10 @@ const createItem = async (req, res) => {
 };
 
 const getItem = async (req, res) => {
-    const { itemId } = req.params;
+    const { id } = req.params;
     const userId = req.id;
-
-    const item = await Items.findById(itemId,{comments:0})
+    console.log({id})
+    const item = await Items.findById(id,{comments:0})
         .populate({
             path: 'owner',
             select: '_id name',

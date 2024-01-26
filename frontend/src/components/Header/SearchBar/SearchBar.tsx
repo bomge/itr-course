@@ -53,7 +53,7 @@ export default function SearchBar() {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		fetchSearch();
+		value && fetchSearch();
 	}, [debounced]);
 
 	const options =
