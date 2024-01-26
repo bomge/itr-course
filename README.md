@@ -1,4 +1,8 @@
 
+Deploy https://itr-course.vercel.app/
+![image](https://github.com/bomge/itr-course/assets/28229134/6d54d72d-c121-4ccb-a3d0-252692e338e1)
+
+
 ### Key Features:
 
 1. **Backend Communication**: The frontend now seamlessly communicates with the backend, eliminating the need for hardcoded data.
